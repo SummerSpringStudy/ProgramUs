@@ -15,12 +15,12 @@ import java.util.List;
 public class Position {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    Long id;
+    private Long id;
 
-    String name;
+    private String name;
 
     @OneToMany
-    List<Member> members;
+    private List<Member> members;
 
     public Position(String name) {
         this.name = name;
