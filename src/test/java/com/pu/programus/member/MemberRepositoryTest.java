@@ -1,10 +1,16 @@
 package com.pu.programus.member;
 
+import com.pu.programus.MemberProject;
 import org.assertj.core.api.Assertions;
-import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.test.context.web.WebAppConfiguration;
+
+import java.util.ArrayList;
+import java.util.List;
+
+import static org.junit.jupiter.api.Assertions.*;
 
 @SpringBootTest
 class MemberRepositoryTest {
@@ -21,5 +27,22 @@ class MemberRepositoryTest {
 
         Member member2 = memberRepository.findByUserId(오정환).get();
         Assertions.assertThat(member2.getUserId()).isEqualTo(member1.getUserId());
+    }
+
+    @Test
+    void getProjectsFromMember() {
+        String name = "TOM";
+        List<MemberProject> projects = new ArrayList<>();
+        projects.add(new MemberProject());
+        projects.add(new MemberProject());
+
+        Member member = new Member();
+        member.setUserId(name);
+        member.setMemberProject(projects);
+        memberRepository.save(member);
+
+        Member target = memberRepository.findByUserId(name).get();
+        assertEquals(2, target.getMemberProject().size());
+
     }
 }
