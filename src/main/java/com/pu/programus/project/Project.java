@@ -28,6 +28,6 @@ public class Project {
     private String description;
     private String githubLink;
 
-    @OneToMany
+    @OneToMany(mappedBy = "member")
     private List<MemberProject> memberProject;
 }
