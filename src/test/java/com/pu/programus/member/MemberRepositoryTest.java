@@ -1,11 +1,10 @@
 package com.pu.programus.member;
 
-import com.pu.programus.MemberProject;
+import com.pu.programus.bridge.MemberProject;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.test.context.web.WebAppConfiguration;
 
 import java.util.ArrayList;
 import java.util.List;

@@ -6,6 +6,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
+import java.util.ArrayList;
 import java.util.List;
 
 @NoArgsConstructor
@@ -20,9 +21,6 @@ public class Location {
 
     private String name;
 
-    @OneToMany
-    private List<Project> projects;
-
-    public Location(String name) { this.name = name;}
-
+    @OneToMany(mappedBy = "location")
+    private List<Project> projects = new ArrayList<>();
 }

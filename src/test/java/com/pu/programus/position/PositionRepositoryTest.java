@@ -4,6 +4,7 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Optional;
@@ -11,6 +12,7 @@ import java.util.Optional;
 import static org.assertj.core.api.Assertions.assertThat;
 
 @SpringBootTest
+@Transactional
 class PositionRepositoryTest {
 
     @Autowired
@@ -23,7 +25,7 @@ class PositionRepositoryTest {
         positionRepository.save(position);
 
         Optional<Position> result = positionRepository.findByName("디자이너");
-        Assertions.assertEquals(result.get(), position);
+        Assertions.assertEquals(result.get().toString(), position.toString());
     }
 
     @Test

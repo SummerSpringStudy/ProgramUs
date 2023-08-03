@@ -1,8 +1,7 @@
 package com.pu.programus.project;
 
-import com.pu.programus.MemberProject;
+import com.pu.programus.bridge.MemberProject;
 import com.pu.programus.location.Location;
-import com.pu.programus.position.Position;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;

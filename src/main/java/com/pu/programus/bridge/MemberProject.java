@@ -1,10 +1,8 @@
-package com.pu.programus;
+package com.pu.programus.bridge;
 
 import com.pu.programus.member.Member;
 import com.pu.programus.project.Project;
-import lombok.AllArgsConstructor;
 import lombok.Data;
-import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
 
