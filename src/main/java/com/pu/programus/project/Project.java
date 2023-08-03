@@ -1,6 +1,8 @@
 package com.pu.programus.project;
 
 import com.pu.programus.MemberProject;
+import com.pu.programus.location.Location;
+import com.pu.programus.position.Position;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -17,16 +19,20 @@ public class Project {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    private Long projectId;
 
     private String title;
+    private String keyword;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    private Location location;
 
     private Date startTime;
     private Date endTime;
 
     private ProjectStatus status;
     private String description;
-    private String githubLink;
+
 
     @OneToMany(mappedBy = "member")
     private List<MemberProject> memberProject;
