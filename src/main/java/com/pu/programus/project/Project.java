@@ -23,7 +23,7 @@ public class Project {
     private String title;
     private String keyword;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     private Location location;
 
     private Date startTime;
