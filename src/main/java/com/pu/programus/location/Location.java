@@ -21,6 +21,11 @@ public class Location {
 
     private String name;
 
-    @OneToMany(mappedBy = "location")
+    @OneToMany(mappedBy = "location", cascade = CascadeType.ALL)
     private List<Project> projects = new ArrayList<>();
+
+    public void add(Project project) {
+        project.setLocation(this);
+        this.projects.add(project);
+    }
 }
