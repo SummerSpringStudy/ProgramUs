@@ -26,9 +26,9 @@ public class PositionServiceTest {
 
         positionRepository.save(position);
 
-        Optional<Position> result = positionService.getPosition("포지션");
-
-        assertThat(result.get().getName()).isEqualTo(position.getName());
+        Position result = positionService.getPosition("포지션")
+                .orElseThrow(() -> new IllegalArgumentException("Wrong position"));
+        assertThat(result.getName()).isEqualTo(position.getName());
     }
 
     @Test
@@ -43,8 +43,6 @@ public class PositionServiceTest {
 
         List<Position> positionList = positionService.getPositionList();
         assertThat(positionList.size()).isEqualTo(3);
-
-        //System.out.println("positionListSize = " + positionList.size());
     }
 
 }
