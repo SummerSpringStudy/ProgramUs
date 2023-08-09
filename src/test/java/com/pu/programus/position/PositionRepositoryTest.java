@@ -24,8 +24,9 @@ class PositionRepositoryTest {
 
         positionRepository.save(position);
 
-        Optional<Position> result = positionRepository.findByName("디자이너");
-        Assertions.assertEquals(result.get().toString(), position.toString());
+        Position result = positionRepository.findByName("디자이너")
+                .orElseThrow(() -> new IllegalArgumentException("Wrong name"));
+        Assertions.assertEquals(result.toString(), position.toString());
     }
 
     @Test
