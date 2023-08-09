@@ -21,7 +21,7 @@ public class Project {
     private Long projectId;
 
     private String title;
-    private String keyword;
+    private String keyword; // 리스트로 만들필요 ex) 스프링 장고
 
     @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     private Location location;
@@ -32,6 +32,7 @@ public class Project {
     private ProjectStatus status;
     private String description;
 
+    // 포지션별 필요 인원 데이터 추가
 
     @OneToMany(mappedBy = "member")
     private List<MemberProject> memberProject;
