@@ -10,7 +10,7 @@ import javax.transaction.Transactional;
 import java.util.ArrayList;
 import java.util.List;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 @SpringBootTest
 @Transactional
@@ -26,7 +26,8 @@ class MemberRepositoryTest {
         member1.setUserId(오정환);
         memberRepository.save(member1);
 
-        Member member2 = memberRepository.findByUserId(오정환).get();
+        Member member2 = memberRepository.findByUserId(오정환)
+                .orElseThrow(() -> new IllegalArgumentException("Wrong userId"));
         Assertions.assertThat(member2.getUserId()).isEqualTo(member1.getUserId());
     }
 
@@ -42,7 +43,8 @@ class MemberRepositoryTest {
         member.setMemberProject(projects);
         memberRepository.save(member);
 
-        Member target = memberRepository.findByUserId(name).get();
+        Member target = memberRepository.findByUserId(name)
+                .orElseThrow(() -> new IllegalArgumentException("Wrong userId"));
         assertEquals(2, target.getMemberProject().size());
 
     }
