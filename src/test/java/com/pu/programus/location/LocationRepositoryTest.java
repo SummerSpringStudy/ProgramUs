@@ -41,7 +41,8 @@ public class LocationRepositoryTest {
         projectRepository.save(project1);
         projectRepository.save(project2);
 
-        Location getLoc = locationRepository.findByName("서울").get();
+        Location getLoc = locationRepository.findByName("서울")
+                .orElseThrow(() -> new IllegalArgumentException("Wrong Location Name"));
         Assertions.assertEquals(2, getLoc.getProjects().size());
     }
 }
