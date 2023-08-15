@@ -6,6 +6,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
+import java.util.ArrayList;
 import java.util.List;
 
 @NoArgsConstructor
@@ -20,6 +21,6 @@ public class Keyword {
     private String value;
 
     @OneToMany(mappedBy = "keyword")
-    private List<ProjectKeyword> projectKeywords ;
+    private List<ProjectKeyword> projectKeywords = new ArrayList<>();
 
 }

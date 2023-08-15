@@ -7,6 +7,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
+import java.util.ArrayList;
 import java.util.List;
 
 @NoArgsConstructor
@@ -21,10 +22,10 @@ public class Position {
     private String name;
 
     @OneToMany(mappedBy = "position")
-    private List<Member> members;
+    private List<Member> members = new ArrayList<>();
 
     @OneToMany(mappedBy = "position")
-    private List<ProjectHeadCount> projectHeadCounts;
+    private List<ProjectHeadCount> projectHeadCounts = new ArrayList<>();
 
     public Position(String name) {
         this.name = name;

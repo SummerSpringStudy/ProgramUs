@@ -7,6 +7,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
+import java.util.ArrayList;
 import java.util.List;
 
 @NoArgsConstructor
@@ -31,5 +32,5 @@ public class Member {
     private Position position; // 카테고리로 바꾸기
 
     @OneToMany(mappedBy = "project") // mappedBy로 참조하는 외래키임을 명시
-    private List<MemberProject> memberProjects;
+    private List<MemberProject> memberProjects = new ArrayList<>();
 }
