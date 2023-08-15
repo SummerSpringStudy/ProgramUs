@@ -18,7 +18,7 @@ public class Project {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long projectId;
+    private Long id;
 
     private String title;
     private String keyword; // 리스트로 만들필요 ex) 스프링 장고 -> project처럼 만들기
