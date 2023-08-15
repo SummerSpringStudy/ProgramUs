@@ -1,13 +1,11 @@
 package com.pu.programus.keyword;
 
-import com.pu.programus.project.Project;
+import com.pu.programus.bridge.ProjectKeyword;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
-import java.security.Key;
-import java.util.ArrayList;
 import java.util.List;
 
 @NoArgsConstructor
@@ -23,8 +21,8 @@ public class Keyword {
 
 
 //    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
-    @OneToMany(mappedBy = "keyword")
-    private List<Keyword> projectKeywords ;
+    @OneToMany
+    private List<ProjectKeyword> projectKeywords ;
 
 
 
