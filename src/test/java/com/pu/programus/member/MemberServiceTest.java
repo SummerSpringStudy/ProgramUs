@@ -22,12 +22,14 @@ public class MemberServiceTest {
         tmp.setUserName("HongGilDong");
         memberRepository.save(tmp);
 
-        Member target = memberRepository.findById(id).get();
+        Member target = memberRepository.findById(id)
+                .orElseThrow(() -> new IllegalArgumentException("Wrong id"));
         target.setUserName("김진수");
 
         memberService.modify(id, target);
 
-        Member user = memberRepository.findByUserId(target.getUserId()).get();
+        Member user = memberRepository.findByUserId(target.getUserId())
+                .orElseThrow(() -> new IllegalArgumentException("Wrong userId"));
         Assertions.assertEquals(user.getId(), target.getId());
     }
 
