@@ -2,6 +2,8 @@ package com.pu.programus.project;
 
 import com.pu.programus.bridge.MemberProject;
 import com.pu.programus.bridge.MemberProjectRepository;
+import com.pu.programus.bridge.ProjectKeyword;
+import com.pu.programus.bridge.ProjectKeywordRepository;
 import com.pu.programus.member.Member;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -17,6 +19,7 @@ public class ProjectService {
     private final ProjectRepository projectRepository;
     private final MemberProjectRepository memberProjectRepository;
     private final ProjectHeadCountRepository projectHeadCountRepository;
+    private final ProjectKeywordRepository projectKeywordRepository;
 
     public void create(Member member) {
 
@@ -31,7 +34,10 @@ public class ProjectService {
     }
 
     public void saveProject(Project project) {
-        //Todo: keywords도 추가하기
+        for (ProjectKeyword projectKeyword : project.getProjectKeywords()) {
+            projectKeywordRepository.save(projectKeyword);
+        }
+
         for (MemberProject memberProject : project.getMemberProjects()) {
             memberProjectRepository.save(memberProject);
         }
