@@ -1,7 +1,7 @@
 package com.pu.programus.project;
 
 import com.pu.programus.bridge.MemberProject;
-import com.pu.programus.keyword.Keyword;
+import com.pu.programus.bridge.ProjectKeyword;
 import com.pu.programus.location.Location;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -23,8 +23,8 @@ public class Project {
 
     private String title;
 
-    @OneToMany(mappedBy = "projectKeywords")
-    private List<Keyword> projectKeywords ; // 리스트로 만들필요 ex) 스프링 장고 -> project처럼 만들기
+    @OneToMany(mappedBy = "project")
+    private List<ProjectKeyword> projectKeywords ; // 리스트로 만들필요 ex) 스프링 장고 -> project처럼 만들기
 
     @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     private Location location;
