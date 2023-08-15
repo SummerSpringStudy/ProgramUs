@@ -31,5 +31,5 @@ public class Member {
     private Position position; // 카테고리로 바꾸기
 
     @OneToMany(mappedBy = "project") // mappedBy로 참조하는 외래키임을 명시
-    private List<MemberProject> memberProject;
+    private List<MemberProject> memberProjects;
 }

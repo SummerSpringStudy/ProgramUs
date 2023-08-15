@@ -19,15 +19,11 @@ public class Keyword {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    private String name;
+    private String value;
 
 
 //    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
-    @OneToMany(mappedBy = "keyword")
+    @OneToMany()
     private List<Keyword> projectKeywords ;
-
-
-
-
 
 }

@@ -8,7 +8,6 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -24,7 +23,7 @@ public class Project {
 
     private String title;
 
-    @OneToMany(mappedBy = "project")
+    @OneToMany(mappedBy = "projectKeywords")
     private List<Keyword> projectKeywords ; // 리스트로 만들필요 ex) 스프링 장고 -> project처럼 만들기
 
     @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
@@ -40,6 +39,5 @@ public class Project {
     private List<ProjectHeadCount> projectHeadCounts;
 
     @OneToMany(mappedBy = "project")
-    private List<MemberProject> memberProject;
-
+    private List<MemberProject> memberProjects;
 }
