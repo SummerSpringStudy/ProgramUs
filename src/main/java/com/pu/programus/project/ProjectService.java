@@ -35,8 +35,8 @@ public class ProjectService {
     public void show(Long id, Member member) {
 
     }
+    //Todo: projectHeadCount 생성 로직 만들기
 
-    //Todo: 테스트코드 만들어보기
     public void saveProject(Project project) {
         for (ProjectKeyword projectKeyword : project.getProjectKeywords()) {
             projectKeywordRepository.save(projectKeyword);
@@ -70,5 +70,8 @@ public class ProjectService {
             }
         }
         return result;
+    }
+    public List<Project> getProjectsByTitle(String title) {
+        return projectRepository.findByTitle(title);
     }
 }
