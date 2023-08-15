@@ -1,14 +1,13 @@
 package com.pu.programus.project;
 
 import com.pu.programus.bridge.MemberProject;
-import com.pu.programus.keyword.Keyword;
+import com.pu.programus.bridge.ProjectKeyword;
 import com.pu.programus.location.Location;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -24,8 +23,8 @@ public class Project {
 
     private String title;
 
-    @OneToMany(mappedBy = "project")
-    private List<Keyword> projectKeywords ; // 리스트로 만들필요 ex) 스프링 장고 -> project처럼 만들기
+    @OneToMany(mappedBy = "projectKeywords")
+    private List<ProjectKeyword> projectKeywords ; // 리스트로 만들필요 ex) 스프링 장고 -> project처럼 만들기
 
     @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     private Location location;
