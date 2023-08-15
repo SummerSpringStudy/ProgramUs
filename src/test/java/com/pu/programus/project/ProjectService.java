@@ -6,7 +6,8 @@ import com.pu.programus.bridge.ProjectKeyword;
 import com.pu.programus.bridge.ProjectKeywordRepository;
 import com.pu.programus.member.Member;
 import com.pu.programus.position.Position;
-import lombok.AllArgsConstructor;
+import com.pu.programus.position.PositionRepository;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
@@ -16,13 +17,17 @@ import java.util.Optional;
 
 @Service
 @Transactional
-@AllArgsConstructor
 public class ProjectService {
-
-    private final ProjectRepository projectRepository;
-    private final MemberProjectRepository memberProjectRepository;
-    private final ProjectHeadCountRepository projectHeadCountRepository;
-    private final ProjectKeywordRepository projectKeywordRepository;
+    @Autowired
+    private ProjectRepository projectRepository;
+    @Autowired
+    private MemberProjectRepository memberProjectRepository;
+    @Autowired
+    private ProjectHeadCountRepository projectHeadCountRepository;
+    @Autowired
+    private ProjectKeywordRepository projectKeywordRepository;
+    @Autowired
+    private PositionRepository positionRepository;
 
     public void create(Member member) {
 
@@ -57,7 +62,19 @@ public class ProjectService {
     }
 
     public List<Project> findProjectsByRecruitingPosition(Position pos) {
-        List<Project> projects = projectRepository.findAll();
+
+        Optional<Position> position = positionRepository.findByName(pos.getName());
+        List<ProjectHeadCount> projectHeadCounts = position.get().getProjectHeadCounts();
+
+        List<Project> projects = new ArrayList<>();
+
+        for (ProjectHeadCount projectHeadCount : projectHeadCounts) {
+            projects.add(projectHeadCount.getProject());
+        }
+        return projects;
+
+
+        /*List<Project> projects = projectRepository.findAll();
         List<Project> result = new ArrayList<>();
 
         for (Project project : projects) {
@@ -70,5 +87,5 @@ public class ProjectService {
             }
         }
         return result;
-    }
+    */}
 }

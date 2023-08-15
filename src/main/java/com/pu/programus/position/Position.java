@@ -2,18 +2,18 @@ package com.pu.programus.position;
 
 import com.pu.programus.member.Member;
 import com.pu.programus.project.ProjectHeadCount;
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
+import org.hibernate.Hibernate;
 
 import javax.persistence.*;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 @NoArgsConstructor
 @AllArgsConstructor
-@Data
 @Entity
+@Data
 public class Position {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -30,5 +30,16 @@ public class Position {
     public Position(String name) {
         this.name = name;
     }
+
+    public void addMember(Member member) {
+        member.setPosition(this);
+        members.add(member);
+    }
+
+    public void addProjectHeadCount(ProjectHeadCount projectHeadCount) {
+        projectHeadCount.setPosition(this);
+        projectHeadCounts.add(projectHeadCount);
+    }
+
 
 }
