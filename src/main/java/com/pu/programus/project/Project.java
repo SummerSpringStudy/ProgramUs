@@ -21,7 +21,7 @@ public class Project {
     private Long projectId;
 
     private String title;
-    private String keyword; // 리스트로 만들필요 ex) 스프링 장고
+    private String keyword; // 리스트로 만들필요 ex) 스프링 장고 -> project처럼 만들기
 
     @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     private Location location;

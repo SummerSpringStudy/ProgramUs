@@ -24,5 +24,5 @@ public class PositionService {
         return positions;
     }
     
-    //포지션 기준으ㅡ로 프로젝트 조회
+    //포지션 기준으로 프로젝트 조회
 }
