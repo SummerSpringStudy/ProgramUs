@@ -9,6 +9,7 @@ import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -32,8 +33,8 @@ public class ProjectService {
     public void show(Long id, Member member) {
 
     }
+    //Todo: projectHeadCount 생성 로직 만들기
 
-    //Todo: 테스트코드 만들어보기
     public void saveProject(Project project) {
         for (ProjectKeyword projectKeyword : project.getProjectKeywords()) {
             projectKeywordRepository.save(projectKeyword);
@@ -51,5 +52,9 @@ public class ProjectService {
 
     public Optional<Project> getProjectById(Long projectId) {
         return projectRepository.findById(projectId);
+    }
+
+    public List<Project> getProjectsByTitle(String title) {
+        return projectRepository.findByTitle(title);
     }
 }

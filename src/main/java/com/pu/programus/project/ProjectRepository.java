@@ -2,9 +2,9 @@ package com.pu.programus.project;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 
-import java.util.Optional;
+import java.util.List;
 
 public interface ProjectRepository extends JpaRepository<Project, Long> {
 
-    Optional<Project> findByTitle(String title);
+    List<Project> findByTitle(String title);
 }

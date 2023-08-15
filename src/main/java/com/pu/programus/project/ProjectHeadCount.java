@@ -1,15 +1,13 @@
 package com.pu.programus.project;
 
 import com.pu.programus.position.Position;
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import javax.persistence.*;
 
 @NoArgsConstructor
 @AllArgsConstructor
-@Data
+@Getter @Setter
 @Entity
 public class ProjectHeadCount {
     @Id
@@ -24,4 +22,13 @@ public class ProjectHeadCount {
 
     private int nowHeadCount;
     private int maxHeadCount;
+
+    @Override
+    public String toString() {
+        return "ProjectHeadCount{" +
+                "id=" + id +
+                ", nowHeadCount=" + nowHeadCount +
+                ", maxHeadCount=" + maxHeadCount +
+                '}';
+    }
 }
