@@ -9,6 +9,7 @@ import javax.persistence.*;
 @AllArgsConstructor
 @Getter @Setter
 @Entity
+@Builder
 public class ProjectHeadCount {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
