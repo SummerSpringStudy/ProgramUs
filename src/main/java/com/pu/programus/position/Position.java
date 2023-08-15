@@ -1,6 +1,7 @@
 package com.pu.programus.position;
 
 import com.pu.programus.member.Member;
+import com.pu.programus.project.ProjectHeadCount;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -19,8 +20,11 @@ public class Position {
 
     private String name;
 
-    @OneToMany
+    @OneToMany(mappedBy = "position")
     private List<Member> members;
+
+    @OneToMany(mappedBy = "position")
+    private List<ProjectHeadCount> projectHeadCounts;
 
     public Position(String name) {
         this.name = name;

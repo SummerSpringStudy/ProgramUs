@@ -36,9 +36,10 @@ public class Project {
     private ProjectStatus status;
     private String description;
 
-    // 포지션별 필요 인원 데이터 추가
+    @OneToMany(mappedBy = "project")
+    private List<ProjectHeadCount> projectHeadCounts;
 
-    @OneToMany(mappedBy = "member")
+    @OneToMany(mappedBy = "project")
     private List<MemberProject> memberProject;
 
 }
