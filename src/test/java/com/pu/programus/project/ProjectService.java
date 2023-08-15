@@ -87,5 +87,10 @@ public class ProjectService {
             }
         }
         return result;
-    */}
+    */
+    }
+
+    public List<Project> getProjectsByTitle(String title) {
+        return projectRepository.findByTitle(title);
+    }
 }

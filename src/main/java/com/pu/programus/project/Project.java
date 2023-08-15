@@ -41,4 +41,9 @@ public class Project {
 
     @OneToMany(mappedBy = "project")
     private List<MemberProject> memberProjects = new ArrayList<>();
+
+    public void addProjectHeadCount(ProjectHeadCount projectHeadCount) {
+        projectHeadCounts.add(projectHeadCount);
+        projectHeadCount.setProject(this);
+    }
 }

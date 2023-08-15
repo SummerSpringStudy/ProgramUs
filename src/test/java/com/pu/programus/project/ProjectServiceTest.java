@@ -11,6 +11,7 @@ import org.springframework.test.annotation.Rollback;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.zip.CRC32;
 
 import static org.assertj.core.api.Assertions.assertThat;
 @SpringBootTest
@@ -69,26 +70,21 @@ public class ProjectServiceTest {
         ProjectHeadCount projectHeadCount1 = new ProjectHeadCount();
         projectHeadCount1.setPosition(java);
         projectHeadCount1.setProject(project1);
+        java.addProjectHeadCount(projectHeadCount1);
+        project1.addProjectHeadCount(projectHeadCount1);
+
         ProjectHeadCount projectHeadCount2 = new ProjectHeadCount();
         projectHeadCount2.setPosition(c);
         projectHeadCount2.setProject(project1);
+        c.addProjectHeadCount(projectHeadCount2);
+        project1.addProjectHeadCount(projectHeadCount2);
+
         ProjectHeadCount projectHeadCount3 = new ProjectHeadCount();
         projectHeadCount3.setPosition(cpp);
         projectHeadCount3.setProject(project2);
+        cpp.addProjectHeadCount(projectHeadCount3);
+        project2.addProjectHeadCount(projectHeadCount3);
 
-   /*     List<ProjectHeadCount> projectHeadCountList1 = new ArrayList<>();
-        List<ProjectHeadCount> projectHeadCountList2 = new ArrayList<>();
-
-        // List<ProjectHeadCount> 생성
-        projectHeadCountList1.add(projectHeadCount1);
-        projectHeadCountList1.add(projectHeadCount2);
-        projectHeadCountList2.add(projectHeadCount1);
-        projectHeadCountList2.add(projectHeadCount3);*/
-
-  /*      // 프로젝트의 ProjectHeadCount 저장
-        project1.setProjectHeadCounts(projectHeadCountList1);
-        project2.setProjectHeadCounts(projectHeadCountList2);
-*/
         // 포지션 저장
         positionRepository.save(cpp);
 
