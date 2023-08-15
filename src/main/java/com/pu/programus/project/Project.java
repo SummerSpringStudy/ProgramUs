@@ -46,4 +46,9 @@ public class Project {
         projectHeadCounts.add(projectHeadCount);
         projectHeadCount.setProject(this);
     }
+
+    public void addMemberProject(MemberProject memberProject) {
+        memberProjects.add(memberProject);
+        memberProject.setProject(this);
+    }
 }
