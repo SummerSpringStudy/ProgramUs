@@ -7,11 +7,9 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.test.annotation.Rollback;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
-import java.util.zip.CRC32;
 
 import static org.assertj.core.api.Assertions.assertThat;
 @SpringBootTest
@@ -53,7 +51,6 @@ public class ProjectServiceTest {
     }
 
     @Test
-    @Rollback(value = false)
     public void findProjectsByRecruitingPosition() {
         Project project1 = new Project();
         Project project2 = new Project();
@@ -67,21 +64,24 @@ public class ProjectServiceTest {
         cpp.setName("CPP");
 
         // ProjectHeadCount 생성
-        ProjectHeadCount projectHeadCount1 = new ProjectHeadCount();
-        projectHeadCount1.setPosition(java);
-        projectHeadCount1.setProject(project1);
+        ProjectHeadCount projectHeadCount1 = ProjectHeadCount.builder()
+                .position(java)
+                .project(project1)
+                .build();
         java.addProjectHeadCount(projectHeadCount1);
         project1.addProjectHeadCount(projectHeadCount1);
 
-        ProjectHeadCount projectHeadCount2 = new ProjectHeadCount();
-        projectHeadCount2.setPosition(c);
-        projectHeadCount2.setProject(project1);
+        ProjectHeadCount projectHeadCount2 = ProjectHeadCount.builder()
+                .position(c)
+                .project(project1)
+                .build();
         c.addProjectHeadCount(projectHeadCount2);
         project1.addProjectHeadCount(projectHeadCount2);
 
-        ProjectHeadCount projectHeadCount3 = new ProjectHeadCount();
-        projectHeadCount3.setPosition(cpp);
-        projectHeadCount3.setProject(project2);
+        ProjectHeadCount projectHeadCount3 = ProjectHeadCount.builder()
+                .position(java)
+                .project(project2)
+                .build();
         cpp.addProjectHeadCount(projectHeadCount3);
         project2.addProjectHeadCount(projectHeadCount3);
 
@@ -99,9 +99,7 @@ public class ProjectServiceTest {
 
         Position cppPosition = positionRepository.findByName("CPP")
                 .orElseThrow(() -> new IllegalArgumentException("There's no Position"));
-
         List<Project> result = projectService.findProjectsByRecruitingPosition(cppPosition);
-
         Assertions.assertThat(result).contains(project2);
     }
 

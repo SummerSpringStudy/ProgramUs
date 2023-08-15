@@ -6,7 +6,8 @@ import com.pu.programus.bridge.ProjectKeyword;
 import com.pu.programus.bridge.ProjectKeywordRepository;
 import com.pu.programus.member.Member;
 import com.pu.programus.position.Position;
-import lombok.AllArgsConstructor;
+import com.pu.programus.position.PositionRepository;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
@@ -16,13 +17,17 @@ import java.util.Optional;
 
 @Service
 @Transactional
-@AllArgsConstructor
 public class ProjectService {
-
-    private final ProjectRepository projectRepository;
-    private final MemberProjectRepository memberProjectRepository;
-    private final ProjectHeadCountRepository projectHeadCountRepository;
-    private final ProjectKeywordRepository projectKeywordRepository;
+    @Autowired
+    private ProjectRepository projectRepository;
+    @Autowired
+    private MemberProjectRepository memberProjectRepository;
+    @Autowired
+    private ProjectHeadCountRepository projectHeadCountRepository;
+    @Autowired
+    private ProjectKeywordRepository projectKeywordRepository;
+    @Autowired
+    private PositionRepository positionRepository;
 
     public void create(Member member) {
 
@@ -35,8 +40,8 @@ public class ProjectService {
     public void show(Long id, Member member) {
 
     }
-    //Todo: projectHeadCount 생성 로직 만들기
 
+    //Todo: 테스트코드 만들어보기
     public void saveProject(Project project) {
         for (ProjectKeyword projectKeyword : project.getProjectKeywords()) {
             projectKeywordRepository.save(projectKeyword);
@@ -57,17 +62,16 @@ public class ProjectService {
     }
 
     public List<Project> findProjectsByRecruitingPosition(Position pos) {
-        List<Project> projects = projectRepository.findAll();
-        List<Project> result = new ArrayList<>();
+        List<ProjectHeadCount> projectHeadCounts = positionRepository.findByName(pos.getName())
+                .orElseThrow(() -> new IllegalArgumentException("Cannot find " + pos.getName()))
+                .getProjectHeadCounts();
+        return getProjectsFromProjectHeadCounts(projectHeadCounts);
+    }
 
-        for (Project project : projects) {
-            List<ProjectHeadCount> projectHeadCounts = project.getProjectHeadCounts();
-            for (ProjectHeadCount projectHeadCount : projectHeadCounts) {
-                if (projectHeadCount.getPosition().equals(pos)) {
-                    result.add(project);
-                    break;
-                }
-            }
+    private List<Project> getProjectsFromProjectHeadCounts(List<ProjectHeadCount> projectHeadCounts) {
+        List<Project> result = new ArrayList<>();
+        for (ProjectHeadCount projectHeadCount : projectHeadCounts) {
+            result.add(projectHeadCount.getProject());
         }
         return result;
     }
