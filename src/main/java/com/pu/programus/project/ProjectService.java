@@ -68,14 +68,14 @@ public class ProjectService {
         return getProjectsFromProjectHeadCounts(projectHeadCounts);
     }
 
+    public List<Project> getProjectsByTitle(String title) {
+        return projectRepository.findByTitle(title);
+    }
     private List<Project> getProjectsFromProjectHeadCounts(List<ProjectHeadCount> projectHeadCounts) {
         List<Project> result = new ArrayList<>();
         for (ProjectHeadCount projectHeadCount : projectHeadCounts) {
             result.add(projectHeadCount.getProject());
         }
         return result;
-    }
-    public List<Project> getProjectsByTitle(String title) {
-        return projectRepository.findByTitle(title);
     }
 }
