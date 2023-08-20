@@ -20,6 +20,7 @@ public class Project {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name="PROJECT_ID")
     private Long id;
 
     private String title;
@@ -28,6 +29,7 @@ public class Project {
     private List<ProjectKeyword> projectKeywords = new ArrayList<>(); // 리스트로 만들필요 ex) 스프링 장고 -> project처럼 만들기
 
     @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @JoinColumn(name="LOCATION_ID")
     private Location location;
 
     private Date startTime;

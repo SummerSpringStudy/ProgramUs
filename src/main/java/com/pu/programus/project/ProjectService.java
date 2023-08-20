@@ -8,6 +8,8 @@ import com.pu.programus.member.Member;
 import com.pu.programus.position.Position;
 import com.pu.programus.position.PositionRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
@@ -77,5 +79,9 @@ public class ProjectService {
             result.add(projectHeadCount.getProject());
         }
         return result;
+    }
+
+    public List<Project> getMiniProjects(String location, String position, Pageable pageable){
+        return projectRepository.findAllByLocationAndPosition(location, position, Pageable.ofSize(10));
     }
 }
