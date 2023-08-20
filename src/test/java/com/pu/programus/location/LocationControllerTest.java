@@ -3,6 +3,7 @@ package com.pu.programus.location;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
+import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.web.servlet.MockMvc;
 
@@ -44,7 +45,7 @@ class LocationControllerTest {
         // then
         this.mockMvc.perform(get("/location")).andDo(print())
                 .andExpect(status().isOk())
-                .andExpect(content().json("['서울', '부산', '대구']"));
+                .andExpect(content().json("[{\"name\":\"서울\"},{\"name\":\"부산\"},{\"name\":\"대구\"}]"));
     }
 
 }
