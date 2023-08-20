@@ -1,14 +1,11 @@
 package com.pu.programus.member;
 
-import com.pu.programus.bridge.MemberProject;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
 import javax.transaction.Transactional;
-import java.util.ArrayList;
-import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
@@ -23,12 +20,12 @@ class MemberRepositoryTest {
     void findByUserId() {
         String 오정환 = "오 정 환";
         Member member1 = new Member();
-        member1.setUserId(오정환);
+        member1.setUid(오정환);
         memberRepository.save(member1);
 
-        Member member2 = memberRepository.findByUserId(오정환)
+        Member member2 = memberRepository.findByUid(오정환)
                 .orElseThrow(() -> new IllegalArgumentException("Wrong userId"));
-        Assertions.assertThat(member2.getUserId()).isEqualTo(member1.getUserId());
+        Assertions.assertThat(member2.getUid()).isEqualTo(member1.getUid());
     }
 
     @Test

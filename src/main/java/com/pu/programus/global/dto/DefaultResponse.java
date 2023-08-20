@@ -1,11 +1,18 @@
 package com.pu.programus.global.dto;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 import org.springframework.http.HttpStatus;
 
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
+@Getter @Setter
+@NoArgsConstructor
+@AllArgsConstructor
 public class DefaultResponse {
 
     String msg;
