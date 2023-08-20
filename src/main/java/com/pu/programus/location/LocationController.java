@@ -7,6 +7,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -21,11 +22,12 @@ public class LocationController {
      * @return ResponseEntity<List < Location> > 200 OK, 지역 정보 목록
      */
     @GetMapping("/location")
-    public ResponseEntity<List<LocationDTO>> getAllLocation() {
+    public ResponseEntity<List<String>> getAllLocation() {
         List<Location> locationList = locationService.getAllLocation();
-        List<LocationDTO> result = locationList.stream()
-                .map(e -> LocationDTO.builder().name(e.getName()).build())
-                .collect(Collectors.toList());
+        List<String> result = new ArrayList<>();
+        for (Location l : locationList) {
+            result.add(l.getName());
+        }
         return ResponseEntity.status(HttpStatus.OK).body(result);
     }
 }
