@@ -2,6 +2,7 @@ package com.pu.programus.location;
 
 import com.pu.programus.project.Project;
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
@@ -13,6 +14,7 @@ import java.util.List;
 @AllArgsConstructor
 @Data
 @Entity
+@Builder
 public class Location {
 
     @Id
@@ -22,7 +24,7 @@ public class Location {
     private String name;
 
     @OneToMany(mappedBy = "location", cascade = CascadeType.ALL)
-    private List<Project> projects = new ArrayList<>();
+    private final List<Project> projects = new ArrayList<>();
 
     public void add(Project project) {
         project.setLocation(this);
