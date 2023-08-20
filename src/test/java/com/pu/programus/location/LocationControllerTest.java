@@ -45,7 +45,7 @@ class LocationControllerTest {
         // then
         this.mockMvc.perform(get("/location")).andDo(print())
                 .andExpect(status().isOk())
-                .andExpect(content().json("[{\"name\":\"서울\"},{\"name\":\"부산\"},{\"name\":\"대구\"}]"));
+                .andExpect(content().json("[\"서울\",\"부산\",\"대구\"]"));
     }
 
 }
