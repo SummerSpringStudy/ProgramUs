@@ -74,4 +74,9 @@ public class Member implements UserDetails {
     public boolean isEnabled() {
         return true;
     }
+
+    public void addMemberProject(MemberProject memberProject) {
+        this.memberProjects.add(memberProject);
+        memberProject.setMember(this);
+    }
 }
