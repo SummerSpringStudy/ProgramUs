@@ -17,4 +17,10 @@ public class MemberService {
 
         memberRepository.save(member);
     }
+
+    public Member getProfile(String id) {
+        Member member = memberRepository.findByUid(id).orElseThrow();
+
+        return member;
+    }
 }
