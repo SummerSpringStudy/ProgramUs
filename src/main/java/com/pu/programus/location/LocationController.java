@@ -21,11 +21,7 @@ public class LocationController {
      */
     @GetMapping("/location")
     public ResponseEntity<List<String>> getAllLocation() {
-        List<Location> locationList = locationService.getAllLocation();
-        List<String> result = new ArrayList<>();
-        for (Location l : locationList) {
-            result.add(l.getName());
-        }
+        List<String> result = locationService.getAllLocationNames();
         return ResponseEntity.status(HttpStatus.OK).body(result);
     }
 }
