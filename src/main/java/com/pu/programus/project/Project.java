@@ -5,6 +5,7 @@ import com.pu.programus.bridge.ProjectKeyword;
 import com.pu.programus.location.Location;
 import com.pu.programus.project.DTO.HeadCountResponseDTO;
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
@@ -18,6 +19,7 @@ import java.util.stream.Collectors;
 @AllArgsConstructor
 @Data
 @Entity
+@Builder
 public class Project {
 
     @Id
