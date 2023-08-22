@@ -12,14 +12,15 @@ import java.util.List;
 @Builder
 @ToString
 public class PositionList {
-    List<String> positions = new ArrayList<>();
+    List<PositionDTO> positions = new ArrayList<>();
 
     public static PositionList make(List<Position> positionList) {
         PositionList positions = new PositionList();
-        List<String> stringPositions = positions.getPositions();
+        List<PositionDTO> positionDTOs = positions.getPositions();
 
         for (Position position : positionList) {
-            stringPositions.add(position.getName());
+            PositionDTO positionDTO = new PositionDTO(position.getName());
+            positionDTOs.add(positionDTO);
         }
         return positions;
     }

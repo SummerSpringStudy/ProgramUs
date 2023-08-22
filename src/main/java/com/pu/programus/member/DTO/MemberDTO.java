@@ -1,6 +1,6 @@
 package com.pu.programus.member.DTO;
 
-import com.pu.programus.position.Position;
+import com.pu.programus.position.DTO.PositionDTO;
 import com.pu.programus.project.DTO.ProjectList;
 import lombok.Builder;
 import lombok.Getter;
@@ -15,6 +15,6 @@ public class MemberDTO {
     private String email; // 이메일
     private String intro; // 소개
     private String contents; // 본문 소개
-    private Position position; // 카테고리로 바꾸기
+    private PositionDTO position; // 카테고리로 바꾸기
     private ProjectList projectList;
 }
