@@ -22,5 +22,4 @@ public class Keyword {
 
     @OneToMany(mappedBy = "keyword")
     private List<ProjectKeyword> projectKeywords = new ArrayList<>();
-
 }

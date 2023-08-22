@@ -3,6 +3,7 @@ package com.pu.programus.bridge;
 import com.pu.programus.keyword.Keyword;
 import com.pu.programus.project.Project;
 import lombok.Data;
+import lombok.Getter;
 
 import javax.persistence.*;
 
@@ -18,4 +19,7 @@ public class ProjectKeyword {
     @ManyToOne(fetch = FetchType.LAZY)
     private Project project;
 
+    public String getKeywordValue(){
+        return getKeyword().getValue();
+    }
 }

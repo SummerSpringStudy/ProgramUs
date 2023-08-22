@@ -3,6 +3,7 @@ package com.pu.programus.project;
 import com.pu.programus.bridge.MemberProject;
 import com.pu.programus.bridge.ProjectKeyword;
 import com.pu.programus.location.Location;
+import com.pu.programus.project.DTO.HeadCountResponseDTO;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -11,6 +12,7 @@ import javax.persistence.*;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @NoArgsConstructor
 @AllArgsConstructor
@@ -52,5 +54,15 @@ public class Project {
     public void addMemberProject(MemberProject memberProject) {
         memberProjects.add(memberProject);
         memberProject.setProject(this);
+    }
+
+    public List<String> getKeywords(){
+        return projectKeywords.stream().map(ProjectKeyword::getKeywordValue).collect(Collectors.toList());
+    }
+
+    public List<HeadCountResponseDTO> getHeadCounts(){
+        return projectHeadCounts.stream()
+                .map(HeadCountResponseDTO::make)
+                .collect(Collectors.toList());
     }
 }

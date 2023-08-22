@@ -7,8 +7,8 @@ import com.pu.programus.bridge.ProjectKeywordRepository;
 import com.pu.programus.member.Member;
 import com.pu.programus.position.Position;
 import com.pu.programus.position.PositionRepository;
+import com.pu.programus.project.DTO.ProjectMiniResponseDTO;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
@@ -16,6 +16,7 @@ import javax.transaction.Transactional;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 @Transactional
@@ -81,7 +82,10 @@ public class ProjectService {
         return result;
     }
 
-    public List<Project> getMiniProjects(String location, String position, Pageable pageable){
-        return projectRepository.findAllByLocationAndPosition(location, position, Pageable.ofSize(10));
+    public List<ProjectMiniResponseDTO> getMiniProjects(String location, String position, Pageable pageable){
+        return projectRepository.findAllByLocationAndPosition(location, position, Pageable.ofSize(10))
+                .stream()
+                .map(ProjectMiniResponseDTO::make)
+                .collect(Collectors.toList());
     }
 }
