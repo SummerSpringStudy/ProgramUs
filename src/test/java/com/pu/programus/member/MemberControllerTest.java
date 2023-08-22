@@ -53,7 +53,7 @@ class MemberControllerTest {
         this.mockMvc.perform(get("/member/tom123"))
                 .andDo(print())
                 .andExpect(status().isOk())
-                .andExpect(content().json("[\"temp string\"]"));
+                .andExpect(content().json("{\"uid\":\"tom123\",\"userName\":\"tom123\",\"department\":null,\"email\":null,\"intro\":null,\"contents\":null,\"position\":null,\"projectList\":{\"projects\":[{\"title\":\"Project1\",\"description\":null}]}}"));
     }
 
 }

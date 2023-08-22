@@ -52,6 +52,8 @@ public class MemberService {
         List<ProjectDTO> projects = new ArrayList<>();
         for (MemberProject mp : member.getMemberProjects()) {
             Project project = mp.getProject();
+            ProjectDTO dto = ProjectDTO.builder().title(project.getTitle()).description(project.getDescription()).build();
+            projects.add(dto);
         }
         ProjectList projectList = new ProjectList(projects);
         return projectList;
