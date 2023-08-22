@@ -1,4 +1,4 @@
-package com.pu.programus.member.dto;
+package com.pu.programus.member.DTO;
 
 import com.pu.programus.member.Member;
 import lombok.Getter;

@@ -2,18 +2,20 @@ package com.pu.programus.member;
 
 import com.pu.programus.bridge.MemberProject;
 import com.pu.programus.member.DTO.MemberDTO;
-import com.pu.programus.member.dto.EditMemberDto;
+import com.pu.programus.member.DTO.EditMemberDto;
 import com.pu.programus.position.Position;
 import com.pu.programus.position.PositionRepository;
 import com.pu.programus.project.DTO.ProjectList;
 import com.pu.programus.project.Project;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.List;
 
+@Slf4j
 @Service
 @RequiredArgsConstructor
 @Transactional
@@ -23,8 +25,12 @@ public class MemberService {
     private final PositionRepository positionRepository;
 
     public MemberDTO getProfile(String id) {
-        Member member = memberRepository.findByUid(id).orElseThrow();
+        Member member = memberRepository.findByUid(id)
+                .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 ID입니다."));
+
+        log.info("[getProfile] Member: {}", member);
         ProjectList projectList = getProjects(member);
+        log.info("[getProfile] ProjectList: {}", projectList);
         MemberDTO memberDTO = MemberDTO.builder()
                 .uid(member.getUid())
                 .userName(member.getUsername())
@@ -35,6 +41,7 @@ public class MemberService {
                 .position(member.getPosition())
                 .projectList(projectList)
                 .build();
+        log.info("[getProfile] memberDTO: {}", memberDTO);
         return memberDTO;
     }
 

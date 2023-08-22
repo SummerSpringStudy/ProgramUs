@@ -11,5 +11,5 @@ import java.util.List;
 @Setter
 @RequiredArgsConstructor
 public class ProjectList {
-    private final List<Project> projects;
+    private final List<ProjectDTO> projects;
 }

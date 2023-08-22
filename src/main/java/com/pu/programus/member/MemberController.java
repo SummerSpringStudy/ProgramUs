@@ -6,7 +6,6 @@ import com.pu.programus.jwt.JwtTokenProvider;
 import com.pu.programus.member.DTO.MemberDTO;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -37,7 +36,7 @@ public class MemberController {
 
     @PUTokenApiImplicitParams
     @PostMapping("/edit")
-    public void editMember(@RequestHeader(SecurityConfiguration.TOKEN_HEADER) String token, com.pu.programus.member.dto.EditMemberDto
+    public void editMember(@RequestHeader(SecurityConfiguration.TOKEN_HEADER) String token, com.pu.programus.member.DTO.EditMemberDto
             editMemberDto) {
         String uid = jwtTokenProvider.getUid(token);
 

@@ -30,14 +30,11 @@ public class LocationService {
         return LocationList.builder().locations(result).build();
     }
 
-    public void addLocation(String locationName) throws IOException {
+    public void addLocation(String locationName) {
         Location location = Location.builder()
                 .name(locationName)
                 .build();
 
-        Location savedLocation = locationRepository.save(location);
-        // Todo: 새로 익셉션 만들기?
-        if (savedLocation == null)
-            throw new IOException("저장에 실패했습니다.");
+        locationRepository.save(location);
     }
 }

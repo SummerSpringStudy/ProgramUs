@@ -1,14 +1,12 @@
 package com.pu.programus.member.DTO;
 
-import com.pu.programus.bridge.MemberProject;
 import com.pu.programus.position.Position;
 import com.pu.programus.project.DTO.ProjectList;
 import lombok.Builder;
+import lombok.Getter;
+import lombok.Setter;
 
-import javax.persistence.Column;
-import java.util.ArrayList;
-import java.util.List;
-
+@Getter @Setter
 @Builder
 public class MemberDTO {
     private String uid; // 아이디
