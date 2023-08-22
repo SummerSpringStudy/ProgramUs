@@ -13,6 +13,8 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.annotation.Rollback;
 import org.springframework.test.web.servlet.MockMvc;
 
+import javax.transaction.Transactional;
+
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
@@ -21,6 +23,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 @SpringBootTest
 @AutoConfigureMockMvc
+@Transactional
 class MemberControllerTest {
     @Autowired
     MockMvc mockMvc;
@@ -48,12 +51,12 @@ class MemberControllerTest {
         repository.save(member);
         memberProjectRepository.save(memberProject);
         // when
-//        service.getProfile("tom123");
+
         // then
         this.mockMvc.perform(get("/member/tom123"))
                 .andDo(print())
                 .andExpect(status().isOk())
-                .andExpect(content().json("{\"uid\":\"tom123\",\"userName\":\"tom123\",\"department\":null,\"email\":null,\"intro\":null,\"contents\":null,\"position\":null,\"projectList\":{\"projects\":[{\"title\":\"Project1\",\"description\":null}]}}"));
+                .andExpect(content().json("{\"uid\":\"tom123\",\"userName\":\"tom123\",\"department\":null,\"email\":null,\"intro\":null,\"contents\":null,\"position\":{\"name\":\"\"},\"projectList\":{\"projects\":[{\"title\":\"Project1\",\"description\":null}]}}"));
     }
 
 }

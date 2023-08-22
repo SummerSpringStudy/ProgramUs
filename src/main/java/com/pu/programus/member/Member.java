@@ -38,7 +38,7 @@ public class Member implements UserDetails {
     @ManyToOne(fetch = FetchType.LAZY)
     private Position position; // 카테고리로 바꾸기
 
-    @OneToMany(mappedBy = "project", cascade = CascadeType.ALL) // mappedBy로 참조하는 외래키임을 명시
+    @OneToMany(mappedBy = "project", cascade = CascadeType.ALL, orphanRemoval = true) // mappedBy로 참조하는 외래키임을 명시
     private final List<MemberProject> memberProjects = new ArrayList<>();
 
     //Todo: 변경하기??

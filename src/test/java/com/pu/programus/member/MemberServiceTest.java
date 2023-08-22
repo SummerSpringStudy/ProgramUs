@@ -7,6 +7,7 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.test.annotation.Rollback;
 
 import javax.transaction.Transactional;
 
@@ -46,7 +47,11 @@ public class MemberServiceTest {
     @Test
     public void getProfile() {
         // given
-        Member member = Member.builder().uid("tom123").password("pw1234").userName("HongGilDong").build();
+        Member member = Member.builder()
+                .uid("tom123")
+                .password("pw1234")
+                .userName("HongGilDong")
+                .build();
         Project project = Project.builder().title("Project1").build();
         MemberProject memberProject = new MemberProject();
         memberProject.setProject(project);
