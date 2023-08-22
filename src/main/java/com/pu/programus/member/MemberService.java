@@ -5,6 +5,7 @@ import com.pu.programus.member.DTO.MemberDTO;
 import com.pu.programus.member.DTO.EditMemberDto;
 import com.pu.programus.position.Position;
 import com.pu.programus.position.PositionRepository;
+import com.pu.programus.project.DTO.ProjectDTO;
 import com.pu.programus.project.DTO.ProjectList;
 import com.pu.programus.project.Project;
 import lombok.RequiredArgsConstructor;
@@ -29,8 +30,10 @@ public class MemberService {
                 .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 ID입니다."));
 
         log.info("[getProfile] Member: {}", member);
+
         ProjectList projectList = getProjects(member);
         log.info("[getProfile] ProjectList: {}", projectList);
+
         MemberDTO memberDTO = MemberDTO.builder()
                 .uid(member.getUid())
                 .userName(member.getUsername())
@@ -46,9 +49,9 @@ public class MemberService {
     }
 
     private static ProjectList getProjects(Member member) {
-        List<Project> projects = new ArrayList<>();
+        List<ProjectDTO> projects = new ArrayList<>();
         for (MemberProject mp : member.getMemberProjects()) {
-            projects.add(mp.getProject());
+            Project project = mp.getProject();
         }
         ProjectList projectList = new ProjectList(projects);
         return projectList;
