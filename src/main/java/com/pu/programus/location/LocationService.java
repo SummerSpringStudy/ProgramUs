@@ -1,6 +1,5 @@
 package com.pu.programus.location;
 
-import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -10,7 +9,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Service
-@Data
+@RequiredArgsConstructor
 @Transactional
 public class LocationService {
 
