@@ -3,6 +3,7 @@ package com.pu.programus.project;
 import com.pu.programus.bridge.MemberProject;
 import com.pu.programus.bridge.ProjectKeyword;
 import com.pu.programus.location.Location;
+import com.pu.programus.member.DTO.ProjectMemberDTO;
 import com.pu.programus.project.DTO.HeadCountResponseDTO;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -63,6 +64,12 @@ public class Project {
     public List<HeadCountResponseDTO> getHeadCounts(){
         return projectHeadCounts.stream()
                 .map(HeadCountResponseDTO::make)
+                .collect(Collectors.toList());
+    }
+
+    public List<ProjectMemberDTO> getProjectMembers(){
+        return memberProjects.stream()
+                .map(ProjectMemberDTO::make)
                 .collect(Collectors.toList());
     }
 }

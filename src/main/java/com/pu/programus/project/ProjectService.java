@@ -8,15 +8,15 @@ import com.pu.programus.member.Member;
 import com.pu.programus.position.Position;
 import com.pu.programus.position.PositionRepository;
 import com.pu.programus.project.DTO.ProjectMiniResponseDTO;
+import com.pu.programus.project.DTO.ProjectResponseDTO;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
+
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
@@ -29,7 +29,7 @@ public class ProjectService {
     private final ProjectKeywordRepository projectKeywordRepository;
     private final PositionRepository positionRepository;
 
-    public void create(Member member) {
+    public void create() {
 
     }
 
@@ -54,10 +54,6 @@ public class ProjectService {
             projectHeadCountRepository.save(projectHeadCount);
         }
         projectRepository.save(project);
-    }
-
-    public Optional<Project> getProjectById(Long projectId) {
-        return projectRepository.findById(projectId);
     }
 
     public List<Project> findProjectsByRecruitingPosition(Position pos) {
@@ -85,4 +81,9 @@ public class ProjectService {
                 .map(ProjectMiniResponseDTO::make)
                 .collect(Collectors.toList());
     }
+
+    public ProjectResponseDTO getProjectById(Long projectId) {
+        return ProjectResponseDTO.make(projectRepository.findById(projectId).orElseThrow());
+    }
+
 }
