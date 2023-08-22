@@ -30,6 +30,7 @@ public class Project {
     private String title;
 
     @OneToMany(mappedBy = "project")
+    @Builder.Default
     private List<ProjectKeyword> projectKeywords = new ArrayList<>(); // 리스트로 만들필요 ex) 스프링 장고 -> project처럼 만들기
 
     @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
@@ -42,10 +43,12 @@ public class Project {
     private String description;
 
     @OneToMany(mappedBy = "project")
+    @Builder.Default
     private List<ProjectHeadCount> projectHeadCounts = new ArrayList<>();
 
-    @OneToMany(mappedBy = "project")
-    private List<MemberProject> memberProjects = new ArrayList<>();
+    @OneToMany(mappedBy = "project", cascade = CascadeType.ALL)
+    @Builder.Default
+    private final List<MemberProject> memberProjects = new ArrayList<>();
 
     public void addProjectHeadCount(ProjectHeadCount projectHeadCount) {
         projectHeadCounts.add(projectHeadCount);

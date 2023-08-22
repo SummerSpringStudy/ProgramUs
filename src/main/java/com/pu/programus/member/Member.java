@@ -38,11 +38,12 @@ public class Member implements UserDetails {
     @ManyToOne(fetch = FetchType.LAZY)
     private Position position; // 카테고리로 바꾸기
 
-    @OneToMany(mappedBy = "project") // mappedBy로 참조하는 외래키임을 명시
-    private List<MemberProject> memberProjects = new ArrayList<>();
+    @OneToMany(mappedBy = "project", cascade = CascadeType.ALL) // mappedBy로 참조하는 외래키임을 명시
+    private final List<MemberProject> memberProjects = new ArrayList<>();
 
     //Todo: 변경하기??
     @ElementCollection(fetch = FetchType.EAGER)
+    @Builder.Default
     private List<String> roles = new ArrayList<>();
 
     @Override
@@ -76,7 +77,7 @@ public class Member implements UserDetails {
     }
 
     public void addMemberProject(MemberProject memberProject) {
-        this.memberProjects.add(memberProject);
+        memberProjects.add(memberProject);
         memberProject.setMember(this);
     }
 }

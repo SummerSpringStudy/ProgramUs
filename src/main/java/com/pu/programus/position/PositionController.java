@@ -1,7 +1,6 @@
 package com.pu.programus.position;
 
-import com.pu.programus.location.DTO.LocationList;
-import com.pu.programus.position.dto.PositionList;
+import com.pu.programus.position.DTO.PositionList;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;

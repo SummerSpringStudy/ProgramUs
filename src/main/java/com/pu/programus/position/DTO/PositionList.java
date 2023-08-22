@@ -1,4 +1,4 @@
-package com.pu.programus.position.dto;
+package com.pu.programus.position.DTO;
 
 import com.pu.programus.position.Position;
 import lombok.*;
