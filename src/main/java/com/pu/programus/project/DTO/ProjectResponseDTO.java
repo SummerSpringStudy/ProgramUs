@@ -30,7 +30,7 @@ public class ProjectResponseDTO {
                 .description(project.getDescription())
                 .startTime(project.getStartTime())
                 .endTime(project.getEndTime())
-                .keywords(project.getKeywords())
+                .keywords(project.getKeywordValues())
                 .projectHeadCounts(project.getHeadCounts())
                 .projectMembers(project.getProjectMembers())
                 .build();

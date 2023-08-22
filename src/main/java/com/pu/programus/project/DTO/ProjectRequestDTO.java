@@ -2,6 +2,7 @@ package com.pu.programus.project.DTO;
 
 
 import com.pu.programus.member.DTO.ProjectMemberDTO;
+import com.pu.programus.member.Member;
 import com.pu.programus.project.ProjectHeadCount;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -15,6 +16,7 @@ import java.util.List;
 @NoArgsConstructor
 public class ProjectRequestDTO {
 
+    private Member owner;
     private String title;
     private String location;
     private String description;
@@ -22,5 +24,4 @@ public class ProjectRequestDTO {
     private Date endTime;
     private List<String> keywords;
     private List<HeadCountResponseDTO> projectHeadCounts;
-    private List<ProjectMemberDTO> projectMembers;
 }

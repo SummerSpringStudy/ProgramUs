@@ -41,6 +41,4 @@ public class Position {
         projectHeadCount.setPosition(this);
         projectHeadCounts.add(projectHeadCount);
     }
-
-
 }

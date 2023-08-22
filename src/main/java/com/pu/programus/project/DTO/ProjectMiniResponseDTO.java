@@ -1,8 +1,6 @@
 package com.pu.programus.project.DTO;
 
-import com.pu.programus.bridge.ProjectKeyword;
 import com.pu.programus.project.Project;
-import com.pu.programus.project.ProjectHeadCount;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -21,7 +19,7 @@ public class ProjectMiniResponseDTO {
     public static ProjectMiniResponseDTO make(Project project){
         return ProjectMiniResponseDTO.builder()
                 .title(project.getTitle())
-                .keywords(project.getKeywords())
+                .keywords(project.getKeywordValues())
                 .projectHeadCounts(project.getHeadCounts()) // 인원 정보 리스트는 흠.. [포지션,현재,맥스] 이 리스트를 가져오면 댈 듯
                 .build();
     }

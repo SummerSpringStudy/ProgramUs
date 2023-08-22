@@ -4,14 +4,19 @@ import com.pu.programus.bridge.MemberProject;
 import com.pu.programus.bridge.MemberProjectRepository;
 import com.pu.programus.bridge.ProjectKeyword;
 import com.pu.programus.bridge.ProjectKeywordRepository;
+import com.pu.programus.keyword.KeywordRepository;
+import com.pu.programus.location.LocationRepository;
 import com.pu.programus.member.Member;
 import com.pu.programus.position.Position;
 import com.pu.programus.position.PositionRepository;
+import com.pu.programus.project.DTO.HeadCountResponseDTO;
 import com.pu.programus.project.DTO.ProjectMiniResponseDTO;
+import com.pu.programus.project.DTO.ProjectRequestDTO;
 import com.pu.programus.project.DTO.ProjectResponseDTO;
 import lombok.RequiredArgsConstructor;
 
 import org.springframework.data.domain.Pageable;
+import org.springframework.security.core.parameters.P;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
@@ -23,14 +28,46 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 @Transactional
 public class ProjectService {
+
     private final ProjectRepository projectRepository;
     private final MemberProjectRepository memberProjectRepository;
     private final ProjectHeadCountRepository projectHeadCountRepository;
     private final ProjectKeywordRepository projectKeywordRepository;
     private final PositionRepository positionRepository;
+    private final LocationRepository locationRepository;
+    private final KeywordRepository keywordRepository;
 
-    public void create() {
+    public void create(ProjectRequestDTO projectRequestDTO) {
 
+        String location = projectRequestDTO.getLocation();
+        Member member = projectRequestDTO.getOwner();
+        List<String> keywords = projectRequestDTO.getKeywords();
+        List<HeadCountResponseDTO> projectHeadCounts = projectRequestDTO.getProjectHeadCounts();
+
+        Project project = Project.builder()
+                .title(projectRequestDTO.getTitle())
+                .description(projectRequestDTO.getDescription())
+                .startTime(projectRequestDTO.getStartTime())
+                .endTime(projectRequestDTO.getEndTime())
+                .status(ProjectStatus.RECRUITING)
+                .build();
+
+        project.setLocation(locationRepository.findByName(location).orElseThrow());
+
+        MemberProject memberProject = new MemberProject();
+        memberProject.setProject(project);
+        memberProject.setMember(member);
+        memberProjectRepository.save(memberProject);
+
+        ProjectKeyword projectKeyword = new ProjectKeyword();
+        projectKeyword.setProject(project);
+
+//        projectKeyword.setKeyword();
+//        projectKeywordRepository.save(projectKeyword);
+
+
+
+        projectRepository.save(project);
     }
 
     public void modify(Long id, Member member) {
