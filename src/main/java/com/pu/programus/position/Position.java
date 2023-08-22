@@ -17,7 +17,6 @@ import java.util.Objects;
 public class Position {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name="positionId")
     private Long id;
 
     private String name;

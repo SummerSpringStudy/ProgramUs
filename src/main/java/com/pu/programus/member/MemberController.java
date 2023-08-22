@@ -1,5 +1,6 @@
 package com.pu.programus.member;
 
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -8,9 +9,10 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
+@RequiredArgsConstructor
 public class MemberController {
-    @Autowired
-    private MemberService memberService;
+
+    private final MemberService memberService;
 
     /**
      * memberId의 마이 프로필을 가져오는 API
