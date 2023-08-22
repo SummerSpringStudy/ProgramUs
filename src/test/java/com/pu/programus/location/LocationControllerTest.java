@@ -1,7 +1,9 @@
 package com.pu.programus.location;
 
+import com.pu.programus.config.security.SecurityConfiguration;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
@@ -16,19 +18,17 @@ import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-//@WebMvcTest(LocationController.class)
-@SpringBootTest
+@WebMvcTest(value = LocationController.class)
 class LocationControllerTest {
-/*
     @Autowired
-    private MockMvc mockMvc;*/
+    private MockMvc mockMvc;
 
-//    @MockBean
-    @Autowired
+    @MockBean
+//    @Autowired
     private LocationService service;
 
-//    @MockBean
-    @Autowired
+    @MockBean
+//    @Autowired
     private LocationRepository repository;
 
     @Test
@@ -43,14 +43,12 @@ class LocationControllerTest {
 
         List<Location> locations = new ArrayList<>(List.of(seoul, pusan, daegu));
         // when
-//        when(service.getAllLocation()).thenReturn(locations);
+        when(service.getAllLocation()).thenReturn(locations);
 
         // then
-/*
         this.mockMvc.perform(get("/location")).andDo(print())
                 .andExpect(status().isOk())
                 .andExpect(content().json("[\"서울\",\"부산\",\"대구\"]"));
-*/
     }
 
 }

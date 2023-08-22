@@ -1,5 +1,7 @@
 package com.pu.programus.location;
 
+import lombok.Data;
+import lombok.NoArgsConstructor;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -8,7 +10,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Service
-@RequiredArgsConstructor
+@Data
 @Transactional
 public class LocationService {
 
@@ -18,11 +20,11 @@ public class LocationService {
         return locationRepository.findAll();
     }
 
-    public List<String> getAllLocationNames() {
+    public LocationList getAllLocationNames() {
         List<String> result = new ArrayList<>();
         for (Location l : locationRepository.findAll()) {
             result.add(l.getName());
         }
-        return result;
+        return LocationList.builder().locations(result).build();
     }
 }
