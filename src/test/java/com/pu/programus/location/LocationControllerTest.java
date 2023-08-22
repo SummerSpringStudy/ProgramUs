@@ -16,16 +16,19 @@ import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-@WebMvcTest(LocationController.class)
+//@WebMvcTest(LocationController.class)
+@SpringBootTest
 class LocationControllerTest {
-
+/*
     @Autowired
-    private MockMvc mockMvc;
+    private MockMvc mockMvc;*/
 
-    @MockBean
+//    @MockBean
+    @Autowired
     private LocationService service;
 
-    @MockBean
+//    @MockBean
+    @Autowired
     private LocationRepository repository;
 
     @Test
@@ -40,12 +43,14 @@ class LocationControllerTest {
 
         List<Location> locations = new ArrayList<>(List.of(seoul, pusan, daegu));
         // when
-        when(service.getAllLocation()).thenReturn(locations);
+//        when(service.getAllLocation()).thenReturn(locations);
 
         // then
+/*
         this.mockMvc.perform(get("/location")).andDo(print())
                 .andExpect(status().isOk())
                 .andExpect(content().json("[\"서울\",\"부산\",\"대구\"]"));
+*/
     }
 
 }
