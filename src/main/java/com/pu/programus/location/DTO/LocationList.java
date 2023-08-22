@@ -1,4 +1,4 @@
-package com.pu.programus.location;
+package com.pu.programus.location.DTO;
 
 import lombok.Builder;
 import lombok.Data;

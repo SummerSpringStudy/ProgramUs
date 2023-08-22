@@ -14,10 +14,10 @@ import java.util.Objects;
 @AllArgsConstructor
 @Entity
 @Data
+@Builder
 public class Position {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name="positionId")
     private Long id;
 
     private String name;
