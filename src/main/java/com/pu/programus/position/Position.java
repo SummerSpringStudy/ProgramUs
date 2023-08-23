@@ -20,7 +20,8 @@ public class Position {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    private String name;
+    @Builder.Default
+    private String name = "";
 
     @OneToMany(mappedBy = "position")
     private final List<Member> members = new ArrayList<>();
