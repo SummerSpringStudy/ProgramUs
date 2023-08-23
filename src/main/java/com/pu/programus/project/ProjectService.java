@@ -48,7 +48,8 @@ public class ProjectService {
         log.info("[create] projectRequestDTO: {}", projectRequestDTO);
         String location = projectRequestDTO.getLocation();
         //Todo: exception 추가하기
-        Member member = memberRepository.findByUid(uid).orElseThrow();
+        Member member = memberRepository.findByUid(uid)
+                .orElseThrow(() -> new IllegalArgumentException("uid 가 존재하지 않습니다."));
         List<String> keywords = projectRequestDTO.getKeywords();
         List<HeadCountResponseDTO> projectHeadCounts = projectRequestDTO.getProjectHeadCounts();
 
@@ -72,6 +73,9 @@ public class ProjectService {
         memberProject.setProject(project);
         memberProject.setMember(member);
         memberProjectRepository.save(memberProject);
+
+        member.addMemberProject(memberProject);
+        memberRepository.save(member);
 
         log.info("[create] save project");
 /*
