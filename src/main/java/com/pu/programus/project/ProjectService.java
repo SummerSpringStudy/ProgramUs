@@ -42,10 +42,12 @@ public class ProjectService {
     private final KeywordRepository keywordRepository;
     private final MemberRepository memberRepository;
 
+    //Todo: DTO에서 id 항목 제외
     public void create(String uid, ProjectRequestDTO projectRequestDTO) {
 
         log.info("[create] projectRequestDTO: {}", projectRequestDTO);
         String location = projectRequestDTO.getLocation();
+        //Todo: exception 추가하기
         Member member = memberRepository.findByUid(uid).orElseThrow();
         List<String> keywords = projectRequestDTO.getKeywords();
         List<HeadCountResponseDTO> projectHeadCounts = projectRequestDTO.getProjectHeadCounts();
@@ -60,7 +62,11 @@ public class ProjectService {
 
         log.info("[create] project: {}", project);
 
-        project.setLocation(locationRepository.findByName(location).orElseThrow());
+        //Todo: exception 추가하기
+        //Todo: 지역설정을 하지 않았을 경우
+        //Todo: 없을경우
+        project.setLocation(locationRepository.findByName(location)
+                .orElseThrow(() -> new IllegalArgumentException("없는 지역입니다.")));
 
         MemberProject memberProject = new MemberProject();
         memberProject.setProject(project);
@@ -68,18 +74,26 @@ public class ProjectService {
         memberProjectRepository.save(memberProject);
 
         log.info("[create] save project");
-
+/*
         for(String s : keywords){
             ProjectKeyword projectKeyword = new ProjectKeyword();
             projectKeyword.setProject(project);
-            projectKeyword.setKeyword(keywordRepository.findByValue(s).orElseThrow());
+            //Todo: exception 추가하기
+            //Todo: 없을 경우 생성로직으로 해야함
+            projectKeyword.setKeyword(keywordRepository.findByValue(s)
+                    .orElseThrow(() -> new IllegalArgumentException("없는 키워드입니다.")));
             projectKeywordRepository.save(projectKeyword);
         }
+
+ */
 
         for(HeadCountResponseDTO h : projectHeadCounts){
             ProjectHeadCount projectHeadCount = new ProjectHeadCount();
             projectHeadCount.setProject(project);
-            projectHeadCount.setPosition(positionRepository.findByName(h.getPositionName()).orElseThrow());
+            //Todo: exception 추가하기
+            // Todo: 없을경우
+            projectHeadCount.setPosition(positionRepository.findByName(h.getPositionName())
+                    .orElseThrow(() -> new IllegalArgumentException("없는 모집분야입니다.")));
             projectHeadCount.setNowHeadCount(h.getNowHeadCount());
             projectHeadCount.setMaxHeadCount(h.getMaxHeadCount());
             projectHeadCountRepository.save(projectHeadCount);
@@ -138,7 +152,8 @@ public class ProjectService {
     }
 
     public ProjectResponseDTO getProjectById(Long projectId) {
-        return ProjectResponseDTO.make(projectRepository.findById(projectId).orElseThrow());
+        return ProjectResponseDTO.make(projectRepository.findById(projectId)
+                .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 프로젝트 ID입니다.")));
     }
 
 }
