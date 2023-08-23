@@ -16,7 +16,7 @@ import java.util.List;
 @NoArgsConstructor
 public class ProjectRequestDTO {
 
-    private Member owner;
+    private String uid;
     private String title;
     private String location;
     private String description;

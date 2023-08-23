@@ -7,6 +7,7 @@ import com.pu.programus.bridge.ProjectKeywordRepository;
 import com.pu.programus.keyword.KeywordRepository;
 import com.pu.programus.location.LocationRepository;
 import com.pu.programus.member.Member;
+import com.pu.programus.member.MemberRepository;
 import com.pu.programus.position.Position;
 import com.pu.programus.position.PositionRepository;
 import com.pu.programus.project.DTO.HeadCountResponseDTO;
@@ -16,10 +17,11 @@ import com.pu.programus.project.DTO.ProjectResponseDTO;
 import lombok.RequiredArgsConstructor;
 
 import org.springframework.data.domain.Pageable;
-import org.springframework.security.core.parameters.P;
 import org.springframework.stereotype.Service;
 
+import javax.persistence.EntityManager;
 import javax.transaction.Transactional;
+import java.security.Key;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -36,11 +38,12 @@ public class ProjectService {
     private final PositionRepository positionRepository;
     private final LocationRepository locationRepository;
     private final KeywordRepository keywordRepository;
+    private final MemberRepository memberRepository;
 
-    public void create(ProjectRequestDTO projectRequestDTO) {
+    public void create(String uid, ProjectRequestDTO projectRequestDTO) {
 
         String location = projectRequestDTO.getLocation();
-        Member member = projectRequestDTO.getOwner();
+        Member member = memberRepository.findByUid(uid).orElseThrow();
         List<String> keywords = projectRequestDTO.getKeywords();
         List<HeadCountResponseDTO> projectHeadCounts = projectRequestDTO.getProjectHeadCounts();
 
@@ -59,13 +62,21 @@ public class ProjectService {
         memberProject.setMember(member);
         memberProjectRepository.save(memberProject);
 
-        ProjectKeyword projectKeyword = new ProjectKeyword();
-        projectKeyword.setProject(project);
+        for(String s : keywords){
+            ProjectKeyword projectKeyword = new ProjectKeyword();
+            projectKeyword.setProject(project);
+            projectKeyword.setKeyword(keywordRepository.findByValue(s).orElseThrow());
+            projectKeywordRepository.save(projectKeyword);
+        }
 
-//        projectKeyword.setKeyword();
-//        projectKeywordRepository.save(projectKeyword);
-
-
+        for(HeadCountResponseDTO h : projectHeadCounts){
+            ProjectHeadCount projectHeadCount = new ProjectHeadCount();
+            projectHeadCount.setProject(project);
+            projectHeadCount.setPosition(positionRepository.findByName(h.getPositionName()).orElseThrow());
+            projectHeadCount.setNowHeadCount(h.getNowHeadCount());
+            projectHeadCount.setMaxHeadCount(h.getMaxHeadCount());
+            projectHeadCountRepository.save(projectHeadCount);
+        }
 
         projectRepository.save(project);
     }

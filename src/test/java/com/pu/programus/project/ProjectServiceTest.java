@@ -1,19 +1,30 @@
 package com.pu.programus.project;
 
+import com.pu.programus.bridge.ProjectKeyword;
+import com.pu.programus.bridge.ProjectKeywordRepository;
+import com.pu.programus.keyword.Keyword;
+import com.pu.programus.keyword.KeywordRepository;
 import com.pu.programus.location.Location;
+import com.pu.programus.location.LocationRepository;
+import com.pu.programus.member.Member;
+import com.pu.programus.member.MemberRepository;
 import com.pu.programus.position.Position;
 import com.pu.programus.position.PositionRepository;
+import com.pu.programus.project.DTO.HeadCountResponseDTO;
+import com.pu.programus.project.DTO.ProjectRequestDTO;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.security.core.parameters.P;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.EntityManager;
 import javax.persistence.EntityTransaction;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -33,7 +44,78 @@ public class ProjectServiceTest {
     ProjectHeadCountRepository projectHeadCountRepository;
 
     @Autowired
+    KeywordRepository keywordRepository;
+
+    @Autowired
+    LocationRepository locationRepository;
+
+    @Autowired
+    MemberRepository memberRepository;
+
+    @Autowired
     EntityManager em;
+
+    @Test
+    void 프로젝트_생성(){
+
+        // 멤버 생성 및 저장
+        Member member = new Member();
+        member.setUserName("name");
+        member.setUid("test");
+        member.setPassword("pw");
+        memberRepository.save(member);
+
+        // 지역 생성 및 저장
+        Location location = new Location();
+        location.setName("location");
+        locationRepository.save(location);
+
+        Date sDate = new Date();
+        Date eDate = new Date();
+
+        // 키워드 생성 및 저장
+        List<String> keywords = new ArrayList<>();
+
+        for (int i = 1; i <= 3; i++) {
+            keywords.add("key"+i);
+
+            Keyword keyword = new Keyword();
+            keyword.setValue("key"+i);
+            keywordRepository.save(keyword);
+        }
+
+        //HeadCountResponseDTO List 생성, Position 생성 및 저장
+        List<HeadCountResponseDTO> headCountResponseDTOS = new ArrayList<>();
+
+        for (int i = 1; i <=3 ; i++) {
+            HeadCountResponseDTO h = new HeadCountResponseDTO("p"+i, i, i);
+            headCountResponseDTOS.add(h);
+
+            Position position = new Position();
+            position.setName("p"+i);
+            positionRepository.save(position);
+        }
+
+        ProjectRequestDTO projectRequestDTO = new ProjectRequestDTO(
+                "test", "title", "location" ,"description",
+                sDate, eDate, keywords, headCountResponseDTOS);
+
+        // 프로젝트 생성
+        projectService.create("test", projectRequestDTO);
+
+        em.flush();
+        em.clear();
+
+        List<Project> all = projectRepository.findAll();
+        Project project = all.get(0);
+
+        assertThat(project.getTitle()).isEqualTo("title");
+        assertThat(project.getLocation().getName()).isEqualTo("location");
+        assertThat(project.getDescription()).isEqualTo("description");
+        assertThat(project.getProjectKeywords().size()).isEqualTo(3);
+        assertThat(project.getProjectHeadCounts().size()).isEqualTo(3);
+        assertThat(project.getMemberProjects().size()).isEqualTo(1);
+    }
 
     @Test
     @DisplayName("프로젝트 요약 정보 가져오기")
@@ -72,7 +154,7 @@ public class ProjectServiceTest {
 
         List<Project> results = projectRepository.findAllByLocationAndPosition("서울", "전체", Pageable.unpaged());
 
-        Assertions.assertThat(results.size()).isEqualTo(2);
+        assertThat(results.size()).isEqualTo(2);
 
         System.out.println("results = " + results.size());
         System.out.println("results.get(0) = " + results.get(0).getLocation().getName() +
@@ -156,7 +238,7 @@ public class ProjectServiceTest {
         Position cppPosition = positionRepository.findByName("CPP")
                 .orElseThrow(() -> new IllegalArgumentException("There's no Position"));
         List<Project> result = projectService.findProjectsByRecruitingPosition(cppPosition);
-        Assertions.assertThat(result).contains(project2);
+        assertThat(result).contains(project2);
     }
 
 

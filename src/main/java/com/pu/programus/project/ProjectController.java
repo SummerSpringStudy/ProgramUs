@@ -27,4 +27,9 @@ public class ProjectController {
     public ResponseEntity<ProjectResponseDTO> getProjectById(@PathVariable Long projectId){
         return ResponseEntity.ok(projectService.getProjectById(projectId));
     }
+
+    @PostMapping("/create")
+    public void createProject(@RequestBody String uid, @RequestBody ProjectRequestDTO projectRequestDTO){
+        projectService.create(uid, projectRequestDTO);
+    }
 }

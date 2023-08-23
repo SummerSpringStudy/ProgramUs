@@ -33,7 +33,7 @@ public class Project {
     @Builder.Default
     private List<ProjectKeyword> projectKeywords = new ArrayList<>(); // 리스트로 만들필요 ex) 스프링 장고 -> project처럼 만들기
 
-    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @ManyToOne(fetch = FetchType.LAZY)
     private Location location;
 
     private Date startTime;
@@ -42,7 +42,7 @@ public class Project {
     private ProjectStatus status;
     private String description;
 
-    @OneToMany(mappedBy = "project")
+    @OneToMany(mappedBy = "project", cascade = CascadeType.ALL)
     @Builder.Default
     private List<ProjectHeadCount> projectHeadCounts = new ArrayList<>();
 
