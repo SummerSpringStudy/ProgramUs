@@ -3,6 +3,7 @@ package com.pu.programus.member;
 import com.pu.programus.bridge.MemberProject;
 import com.pu.programus.member.DTO.MemberDTO;
 import com.pu.programus.member.DTO.EditMemberDto;
+import com.pu.programus.position.DTO.PositionDTO;
 import com.pu.programus.position.Position;
 import com.pu.programus.position.PositionRepository;
 import com.pu.programus.project.DTO.ProjectDTO;
@@ -34,6 +35,13 @@ public class MemberService {
         ProjectList projectList = getProjects(member);
         log.info("[getProfile] ProjectList: {}", projectList);
 
+        Position position = member.getPosition();
+        String postionName = "";
+        if (position != null)
+            postionName = position.getName();
+
+        // Todo: 디폴트 포지션 만들기
+        PositionDTO positionDTO = new PositionDTO(postionName);
         MemberDTO memberDTO = MemberDTO.builder()
                 .uid(member.getUid())
                 .userName(member.getUsername())
@@ -41,7 +49,7 @@ public class MemberService {
                 .email(member.getEmail())
                 .department(member.getDepartment())
                 .contents(member.getContents())
-                .position(member.getPosition())
+                .position(positionDTO)
                 .projectList(projectList)
                 .build();
         log.info("[getProfile] memberDTO: {}", memberDTO);
@@ -52,6 +60,8 @@ public class MemberService {
         List<ProjectDTO> projects = new ArrayList<>();
         for (MemberProject mp : member.getMemberProjects()) {
             Project project = mp.getProject();
+            ProjectDTO dto = ProjectDTO.builder().title(project.getTitle()).description(project.getDescription()).build();
+            projects.add(dto);
         }
         ProjectList projectList = new ProjectList(projects);
         return projectList;

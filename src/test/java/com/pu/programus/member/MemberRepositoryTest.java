@@ -7,8 +7,6 @@ import org.springframework.boot.test.context.SpringBootTest;
 
 import javax.transaction.Transactional;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-
 @SpringBootTest
 @Transactional
 class MemberRepositoryTest {
@@ -18,12 +16,16 @@ class MemberRepositoryTest {
 
     @Test
     void findByUserId() {
-        String 오정환 = "오 정 환";
-        Member member1 = new Member();
-        member1.setUid(오정환);
+        String name = "오 정 환";
+        Member member1 = Member.builder()
+                .uid(name)
+                .userName("OJH")
+                .password("1234")
+                .build();
+
         memberRepository.save(member1);
 
-        Member member2 = memberRepository.findByUid(오정환)
+        Member member2 = memberRepository.findByUid(name)
                 .orElseThrow(() -> new IllegalArgumentException("Wrong userId"));
         Assertions.assertThat(member2.getUid()).isEqualTo(member1.getUid());
     }

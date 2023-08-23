@@ -29,6 +29,7 @@ public class PositionService {
                 .name(positionName)
                 .build();
 
+        // Todo: 중복검사
         Position savedPosition = positionRepository.save(position);
         // Todo: 새로 익셉션 만들기?
         if (savedPosition == null)

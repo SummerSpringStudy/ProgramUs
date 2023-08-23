@@ -23,10 +23,10 @@ public class Position {
     private String name;
 
     @OneToMany(mappedBy = "position")
-    private List<Member> members = new ArrayList<>();
+    private final List<Member> members = new ArrayList<>();
 
     @OneToMany(mappedBy = "position")
-    private List<ProjectHeadCount> projectHeadCounts = new ArrayList<>();
+    private final List<ProjectHeadCount> projectHeadCounts = new ArrayList<>();
 
     public Position(String name) {
         this.name = name;

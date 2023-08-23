@@ -9,6 +9,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.web.servlet.MockMvc;
 
+import javax.transaction.Transactional;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -18,17 +19,17 @@ import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-@WebMvcTest(value = LocationController.class)
+@SpringBootTest
+@AutoConfigureMockMvc
+@Transactional
 class LocationControllerTest {
     @Autowired
     private MockMvc mockMvc;
 
-    @MockBean
-//    @Autowired
+    @Autowired
     private LocationService service;
 
-    @MockBean
-//    @Autowired
+    @Autowired
     private LocationRepository repository;
 
     @Test
@@ -43,12 +44,11 @@ class LocationControllerTest {
 
         List<Location> locations = new ArrayList<>(List.of(seoul, pusan, daegu));
         // when
-        when(service.getAllLocation()).thenReturn(locations);
 
         // then
         this.mockMvc.perform(get("/location")).andDo(print())
                 .andExpect(status().isOk())
-                .andExpect(content().json("[\"서울\",\"부산\",\"대구\"]"));
+                .andExpect(content().json("{\"locations\":[\"서울\",\"부산\",\"대구\"]}"));
     }
 
 }
