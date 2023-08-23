@@ -16,6 +16,7 @@ import com.pu.programus.project.DTO.ProjectRequestDTO;
 import com.pu.programus.project.DTO.ProjectResponseDTO;
 import lombok.RequiredArgsConstructor;
 
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
@@ -26,6 +27,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
+@Slf4j
 @Service
 @RequiredArgsConstructor
 @Transactional
@@ -42,6 +44,7 @@ public class ProjectService {
 
     public void create(String uid, ProjectRequestDTO projectRequestDTO) {
 
+        log.info("[create] projectRequestDTO: {}", projectRequestDTO);
         String location = projectRequestDTO.getLocation();
         Member member = memberRepository.findByUid(uid).orElseThrow();
         List<String> keywords = projectRequestDTO.getKeywords();
@@ -55,12 +58,16 @@ public class ProjectService {
                 .status(ProjectStatus.RECRUITING)
                 .build();
 
+        log.info("[create] project: {}", project);
+
         project.setLocation(locationRepository.findByName(location).orElseThrow());
 
         MemberProject memberProject = new MemberProject();
         memberProject.setProject(project);
         memberProject.setMember(member);
         memberProjectRepository.save(memberProject);
+
+        log.info("[create] save project");
 
         for(String s : keywords){
             ProjectKeyword projectKeyword = new ProjectKeyword();
