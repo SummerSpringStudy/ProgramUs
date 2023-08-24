@@ -1,5 +1,6 @@
 package com.pu.programus.position;
 
+import com.pu.programus.bridge.MemberProject;
 import com.pu.programus.member.Member;
 import com.pu.programus.project.ProjectHeadCount;
 import lombok.*;
@@ -28,6 +29,9 @@ public class Position {
 
     @OneToMany(mappedBy = "position")
     private final List<ProjectHeadCount> projectHeadCounts = new ArrayList<>();
+
+    @OneToMany(mappedBy = "position")
+    private final List<MemberProject> memberProjects = new ArrayList<>();
 
     public Position(String name) {
         this.name = name;
