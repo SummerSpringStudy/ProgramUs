@@ -1,5 +1,6 @@
 package com.pu.programus.member.DTO;
 
+import com.pu.programus.location.Location;
 import com.pu.programus.member.Member;
 import lombok.Getter;
 import lombok.Setter;

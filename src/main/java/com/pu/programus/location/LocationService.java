@@ -1,6 +1,7 @@
 package com.pu.programus.location;
 
 import com.pu.programus.location.DTO.LocationList;
+import com.pu.programus.position.Position;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -34,7 +35,11 @@ public class LocationService {
         Location location = Location.builder()
                 .name(locationName)
                 .build();
-
+        validateDuplicate(locationName);
         locationRepository.save(location);
+    }
+    private void validateDuplicate(String locationName) {
+        if (locationRepository.findByName(locationName).isPresent())
+            throw new IllegalArgumentException("이미 존재하는 지역입니다.");
     }
 }
