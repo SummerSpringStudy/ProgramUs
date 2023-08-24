@@ -9,12 +9,8 @@ import com.pu.programus.keyword.KeywordRepository;
 import com.pu.programus.location.LocationRepository;
 import com.pu.programus.member.Member;
 import com.pu.programus.member.MemberRepository;
-import com.pu.programus.position.Position;
 import com.pu.programus.position.PositionRepository;
-import com.pu.programus.project.DTO.HeadCountResponseDTO;
-import com.pu.programus.project.DTO.ProjectMiniResponseDTO;
-import com.pu.programus.project.DTO.ProjectRequestDTO;
-import com.pu.programus.project.DTO.ProjectResponseDTO;
+import com.pu.programus.project.DTO.*;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Pageable;
@@ -45,41 +41,46 @@ public class ProjectService {
     public void create(String uid, ProjectRequestDTO projectRequestDTO) {
 
         log.info("[create] projectRequestDTO: {}", projectRequestDTO);
-        String location = projectRequestDTO.getLocation();
-        Member member = memberRepository.findByUid(uid)
-                .orElseThrow(() -> new IllegalArgumentException("uid 가 존재하지 않습니다."));
-        List<String> keywords = projectRequestDTO.getKeywords();
-        List<HeadCountResponseDTO> projectHeadCounts = projectRequestDTO.getProjectHeadCounts();
 
-        Project project = Project.builder()
-                .title(projectRequestDTO.getTitle())
-                .description(projectRequestDTO.getDescription())
-                .startTime(projectRequestDTO.getStartTime())
-                .endTime(projectRequestDTO.getEndTime())
-                .status(ProjectStatus.RECRUITING)
-                .build();
-
-        log.info("[create] project: {}", project);
+        Project project = buildProjectByPrimitiveValue(projectRequestDTO);
 
         //Todo: exception 추가하기
         //Todo: 지역설정을 하지 않았을 경우
         //Todo: 없을경우
+        String location = projectRequestDTO.getLocation();
         project.setLocation(locationRepository.findByName(location)
                 .orElseThrow(() -> new IllegalArgumentException("없는 지역입니다.")));
 
-        MemberProject memberProject = new MemberProject();
-        memberProject.setProject(project);
-        memberProject.setMember(member);
-        memberProjectRepository.save(memberProject);
+        createMemberProject(project, uid);
 
-        member.addMemberProject(memberProject);
-        memberRepository.save(member);
+        createMemberKeyword(projectRequestDTO, project);
 
-        log.info("[create] save project");
+        createProjectHeadCount(projectRequestDTO, project);
 
+        saveProject(project);
+    }
+
+    private void createProjectHeadCount(ProjectRequestDTO projectRequestDTO, Project project) {
+        List<HeadCountResponseDTO> projectHeadCounts = projectRequestDTO.getProjectHeadCounts();
+        for(HeadCountResponseDTO h : projectHeadCounts){
+            ProjectHeadCount projectHeadCount = new ProjectHeadCount();
+            projectHeadCount.setProject(project);
+            project.addProjectHeadCount(projectHeadCount);
+            //Todo: exception 추가하기
+            // Todo: 없을경우
+            projectHeadCount.setPosition(positionRepository.findByName(h.getPositionName())
+                    .orElseThrow(() -> new IllegalArgumentException("없는 모집분야입니다.")));
+            projectHeadCount.setNowHeadCount(h.getNowHeadCount());
+            projectHeadCount.setMaxHeadCount(h.getMaxHeadCount());
+        }
+    }
+
+    private void createMemberKeyword(ProjectRequestDTO projectRequestDTO, Project project) {
+        List<String> keywords = projectRequestDTO.getKeywords();
         for(String s : keywords){
             ProjectKeyword projectKeyword = new ProjectKeyword();
 
+            //Todo: 로직 분리의 필요성
             Optional<Keyword> optionalKeyword = keywordRepository.findByValue(s);
             Keyword keyword = optionalKeyword.orElseGet(Keyword::new);
 
@@ -91,26 +92,30 @@ public class ProjectService {
 
             projectKeyword.setProject(project);
             projectKeyword.setKeyword(keyword);
-            projectKeywordRepository.save(projectKeyword);
+            project.addProjectKeyword(projectKeyword);
         }
-
-        for(HeadCountResponseDTO h : projectHeadCounts){
-            ProjectHeadCount projectHeadCount = new ProjectHeadCount();
-            projectHeadCount.setProject(project);
-            //Todo: exception 추가하기
-            // Todo: 없을경우
-            projectHeadCount.setPosition(positionRepository.findByName(h.getPositionName())
-                    .orElseThrow(() -> new IllegalArgumentException("없는 모집분야입니다.")));
-            projectHeadCount.setNowHeadCount(h.getNowHeadCount());
-            projectHeadCount.setMaxHeadCount(h.getMaxHeadCount());
-            projectHeadCountRepository.save(projectHeadCount);
-        }
-
-        projectRepository.save(project);
     }
 
-    public void modify(Long id, Member member) {
+    private void createMemberProject(Project project, String uid) {
+        Member member = memberRepository.findByUid(uid)
+                .orElseThrow(() -> new IllegalArgumentException("uid 가 존재하지 않습니다."));
 
+        MemberProject memberProject = new MemberProject();
+        memberProject.setProject(project);
+        memberProject.setMember(member);
+        project.addMemberProject(memberProject);
+
+        member.addMemberProject(memberProject);
+    }
+
+    private static Project buildProjectByPrimitiveValue(ProjectRequestDTO projectRequestDTO) {
+        return Project.builder()
+                .title(projectRequestDTO.getTitle())
+                .description(projectRequestDTO.getDescription())
+                .startTime(projectRequestDTO.getStartTime())
+                .endTime(projectRequestDTO.getEndTime())
+                .status(ProjectStatus.RECRUITING)
+                .build();
     }
 
     public void delete(String uid, Long projectId){
@@ -127,10 +132,6 @@ public class ProjectService {
         projectRepository.delete(project);
     }
 
-    public void show(Long id, Member member) {
-
-    }
-
     public void saveProject(Project project) {
         for (ProjectKeyword projectKeyword : project.getProjectKeywords()) {
             projectKeywordRepository.save(projectKeyword);
@@ -145,14 +146,20 @@ public class ProjectService {
         }
         projectRepository.save(project);
     }
+    
+    // Todo: editProject필요
 
+    // Comment: 필요없어짐
+    /*
     public List<Project> findProjectsByRecruitingPosition(Position pos) {
         List<ProjectHeadCount> projectHeadCounts = positionRepository.findByName(pos.getName())
                 .orElseThrow(() -> new IllegalArgumentException("Cannot find " + pos.getName()))
                 .getProjectHeadCounts();
         return getProjectsFromProjectHeadCounts(projectHeadCounts);
     }
+     */
 
+    // Todo: 제목 조회 api만들기
     public List<Project> getProjectsByTitle(String title) {
         return projectRepository.findByTitle(title);
     }
@@ -165,26 +172,16 @@ public class ProjectService {
         return result;
     }
 
-    public List<ProjectMiniResponseDTO> getMiniProjects(String location, String position, Pageable pageable){
+    public ProjectMiniList getProjectMiniList(String location, String position, Pageable pageable){
 
-        List<Project> projects;
+        List<Project> projects = projectRepository.findAllByLocationAndPosition(location, position, pageable);
 
-        if(location.equals("전체") && position.equals("전체")) {
-            projects = projectRepository.findAll();
-        }
-        else if (location.equals("전체")){
-            projects = projectRepository.findAllByPosition(position, pageable);
-        }
-        else if (position.equals("전체")){
-            projects = projectRepository.findAllByLocation(location, pageable);
-        }
-        else {
-            projects = projectRepository.findAllByLocationAndPosition(location, position, pageable);
-        }
-
-        return projects.stream()
+        List<ProjectMiniResponseDTO> projectMiniResponseDTOS = projects.stream()
                 .map(ProjectMiniResponseDTO::make)
                 .collect(Collectors.toList());
+
+        ProjectMiniList projectMiniList = new ProjectMiniList(projectMiniResponseDTOS);
+        return projectMiniList;
     }
 
     public ProjectResponseDTO getProjectById(Long projectId) {

@@ -55,7 +55,6 @@ public class MemberService {
                 .position(positionDTO)
                 .projectList(projectList)
                 .build();
-        log.info("[getProfile] memberDTO: {}", memberDTO);
         return memberDTO;
     }
 
@@ -63,6 +62,7 @@ public class MemberService {
         List<ProjectDTO> projects = new ArrayList<>();
         for (MemberProject mp : member.getMemberProjects()) {
             Project project = mp.getProject();
+            log.info("[getProjects]: {}",project);
             ProjectDTO dto = ProjectDTO.builder().title(project.getTitle()).description(project.getDescription()).build();
             projects.add(dto);
         }
