@@ -64,4 +64,10 @@ public class ProjectController {
         projectService.apply(projectId, positionName, uid);
     }
 
+    @GetMapping("/contain/{title}")
+    public ResponseEntity<ProjectMiniList> getProjectContainsTitle(@RequestParam String title) {
+        ProjectMiniList projectMiniList = projectService.getProjectsContainsTitle(title);
+        return ResponseEntity.ok(projectMiniList);
+    }
+
 }

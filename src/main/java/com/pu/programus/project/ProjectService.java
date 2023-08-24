@@ -165,8 +165,12 @@ public class ProjectService {
      */
 
     // Todo: 제목 조회 api만들기
-    public List<Project> getProjectsByTitle(String title) {
-        return projectRepository.findByTitle(title);
+    public ProjectMiniList getProjectsContainsTitle(String title) {
+        List<Project> projects = projectRepository.findByTitleContains(title);
+        List<ProjectMiniResponseDTO> projectMiniResponseDTOS = projects.stream()
+                .map(ProjectMiniResponseDTO::make)
+                .collect(Collectors.toList());
+        return new ProjectMiniList(projectMiniResponseDTOS);
     }
 
     private List<Project> getProjectsFromProjectHeadCounts(List<ProjectHeadCount> projectHeadCounts) {
