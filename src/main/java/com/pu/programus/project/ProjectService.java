@@ -11,14 +11,12 @@ import com.pu.programus.member.Member;
 import com.pu.programus.member.MemberRepository;
 import com.pu.programus.position.Position;
 import com.pu.programus.position.PositionRepository;
-import com.pu.programus.project.DTO.HeadCountResponseDTO;
-import com.pu.programus.project.DTO.ProjectMiniResponseDTO;
-import com.pu.programus.project.DTO.ProjectRequestDTO;
-import com.pu.programus.project.DTO.ProjectResponseDTO;
+import com.pu.programus.project.DTO.*;
 import lombok.RequiredArgsConstructor;
 
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Pageable;
+import org.springframework.security.core.parameters.P;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
@@ -47,6 +45,7 @@ public class ProjectService {
 
         log.info("[create] projectRequestDTO: {}", projectRequestDTO);
         String location = projectRequestDTO.getLocation();
+
         Member member = memberRepository.findByUid(uid)
                 .orElseThrow(() -> new IllegalArgumentException("uid 가 존재하지 않습니다."));
         List<String> keywords = projectRequestDTO.getKeywords();
@@ -110,10 +109,6 @@ public class ProjectService {
         projectRepository.save(project);
     }
 
-    public void modify(Long id, Member member) {
-
-    }
-
     public void delete(String uid, Long projectId){
         Member member = memberRepository.findByUid(uid)
                 .orElseThrow(() -> new NoSuchElementException("존재하지 않는 회원입니다."));
@@ -126,10 +121,6 @@ public class ProjectService {
         log.info("[delete] project: {}", project);
 
         projectRepository.delete(project);
-    }
-
-    public void show(Long id, Member member) {
-
     }
 
     public void saveProject(Project project) {
@@ -166,26 +157,16 @@ public class ProjectService {
         return result;
     }
 
-    public List<ProjectMiniResponseDTO> getMiniProjects(String location, String position, Pageable pageable){
+    public ProjectMiniList getProjectMiniList(String location, String position, Pageable pageable){
 
-        List<Project> projects;
+        List<Project> projects = projectRepository.findAllByLocationAndPosition(location, position, pageable);
 
-        if(location.equals("전체") && position.equals("전체")) {
-            projects = projectRepository.findAll();
-        }
-        else if (location.equals("전체")){
-            projects = projectRepository.findAllByPosition(position, pageable);
-        }
-        else if (position.equals("전체")){
-            projects = projectRepository.findAllByLocation(location, pageable);
-        }
-        else {
-            projects = projectRepository.findAllByLocationAndPosition(location, position, pageable);
-        }
-
-        return projects.stream()
+        List<ProjectMiniResponseDTO> projectMiniResponseDTOS = projects.stream()
                 .map(ProjectMiniResponseDTO::make)
                 .collect(Collectors.toList());
+
+        ProjectMiniList projectMiniList = new ProjectMiniList(projectMiniResponseDTOS);
+        return projectMiniList;
     }
 
     public ProjectResponseDTO getProjectById(Long projectId) {
