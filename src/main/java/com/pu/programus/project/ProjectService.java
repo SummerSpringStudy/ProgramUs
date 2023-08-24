@@ -204,13 +204,9 @@ public class ProjectService {
         MemberProject memberProject = new MemberProject();
         memberProject.setProject(project);
         memberProject.setMember(member);
-
-        // 추가
         project.addMemberProject(memberProject);
 
-        // save
-        memberProjectRepository.save(memberProject);
-        projectRepository.save(project);
+        saveProject(project);
     }
 
     private void increaseNowHeadCount(ProjectHeadCount recruitInfo) {
