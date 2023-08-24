@@ -1,9 +1,11 @@
 package com.pu.programus.project;
 
+import com.pu.programus.member.Member;
 import com.pu.programus.position.Position;
 import lombok.*;
 
 import javax.persistence.*;
+import java.util.List;
 
 @NoArgsConstructor
 @AllArgsConstructor

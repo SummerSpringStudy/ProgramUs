@@ -13,6 +13,8 @@ public class MemberProject {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    private String position;
+
     @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     private Member member;
     @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)

@@ -71,6 +71,9 @@ public class ProjectService {
         MemberProject memberProject = new MemberProject();
         memberProject.setProject(project);
         memberProject.setMember(member);
+        //Todo: 그룹장의 경우 Position 일단 미정으로 설정
+        //Todo: 프로젝트 모집글에서 바로 정하게 하는지 생각 필요
+        memberProject.setPosition("미정");
         memberProjectRepository.save(memberProject);
 
         member.addMemberProject(memberProject);
