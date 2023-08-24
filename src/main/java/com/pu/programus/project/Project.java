@@ -5,10 +5,7 @@ import com.pu.programus.bridge.ProjectKeyword;
 import com.pu.programus.location.Location;
 import com.pu.programus.member.DTO.ProjectMemberDTO;
 import com.pu.programus.project.DTO.HeadCountResponseDTO;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import javax.persistence.*;
 import java.util.ArrayList;
@@ -18,7 +15,7 @@ import java.util.stream.Collectors;
 
 @NoArgsConstructor
 @AllArgsConstructor
-@Data
+@Getter @Setter
 @Entity
 @Builder
 public class Project {
