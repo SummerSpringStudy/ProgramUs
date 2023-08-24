@@ -205,17 +205,19 @@ public class ProjectService {
 
         validateDuplicateApply(uid, project.getMemberProjects());
         validateApply(recruitInfo);
-
         increaseNowHeadCount(recruitInfo);
 
         Member member = memberRepository.findByUid(uid)
                 .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 uid 입니다."));
+        connectMemberProject(project, member);
+        saveProject(project);
+    }
+
+    private void connectMemberProject(Project project, Member member) {
         MemberProject memberProject = new MemberProject();
         memberProject.setProject(project);
         memberProject.setMember(member);
         project.addMemberProject(memberProject);
-
-        saveProject(project);
     }
 
     private void increaseNowHeadCount(ProjectHeadCount recruitInfo) {
