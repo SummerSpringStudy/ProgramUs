@@ -4,7 +4,6 @@ import com.pu.programus.annotation.PUTokenApiImplicitParams;
 import com.pu.programus.config.security.SecurityConfiguration;
 import com.pu.programus.jwt.JwtTokenProvider;
 import com.pu.programus.project.DTO.ProjectMiniList;
-import com.pu.programus.project.DTO.ProjectMiniResponseDTO;
 import com.pu.programus.project.DTO.ProjectRequestDTO;
 import com.pu.programus.project.DTO.ProjectResponseDTO;
 import lombok.RequiredArgsConstructor;
@@ -12,8 +11,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.List;
 
 @Slf4j
 @RestController
@@ -25,7 +22,7 @@ public class ProjectController {
     private final JwtTokenProvider jwtTokenProvider;
 
     @GetMapping("/mini")
-    public ResponseEntity<ProjectMiniList> getProjects(@RequestParam(required = false) String location, @RequestParam(required = false) String position, Pageable pageable){
+    public ResponseEntity<ProjectMiniList> getProjectMiniList(@RequestParam(required = false) String location, @RequestParam(required = false) String position, Pageable pageable){
 
         ProjectMiniList projectMiniList = projectService.getProjectMiniList(location, position, pageable);
         return ResponseEntity.ok(projectMiniList);

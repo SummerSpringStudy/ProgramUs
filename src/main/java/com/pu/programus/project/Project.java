@@ -57,6 +57,11 @@ public class Project {
         memberProject.setProject(this);
     }
 
+    public void addProjectKeyword(ProjectKeyword projectKeyword) {
+        projectKeywords.add(projectKeyword);
+        projectKeyword.setProject(this);
+    }
+
     public List<String> getKeywordValues(){
         return projectKeywords.stream().map(ProjectKeyword::getKeywordValue).collect(Collectors.toList());
     }
