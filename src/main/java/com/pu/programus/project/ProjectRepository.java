@@ -12,7 +12,7 @@ public interface ProjectRepository extends JpaRepository<Project, Long> {
 
     @Query("select p from Project p, ProjectHeadCount h " +
             "where p.id = h.project.id and " +
-            "(:location is null or p.location.name = :location or p.location.name = " + Project.ALL_LOCATION + ") and " +
+            "(:location is null or p.location.name = :location or p.location.name = '" + Project.ALL_LOCATION + "') and " +
             "(:position is null or h.position.name = :position) " +
             "group by p " +
             "order by p.id DESC")
