@@ -5,6 +5,7 @@ package com.pu.programus.project.DTO;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.springframework.lang.Nullable;
 
 import java.util.Date;
 import java.util.List;
@@ -15,6 +16,7 @@ import java.util.List;
 public class ProjectRequestDTO {
 
     private String title;
+    @Nullable
     private String location;
     private String description;
     private Date startTime;

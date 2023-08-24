@@ -45,12 +45,8 @@ public class ProjectService {
 
         Project project = buildProjectByPrimitiveValue(projectRequestDTO);
 
-        //Todo: exception 추가하기
         //Todo: 지역설정을 하지 않았을 경우
-        //Todo: 없을경우
-        String location = projectRequestDTO.getLocation();
-        project.setLocation(locationRepository.findByName(location)
-                .orElseThrow(() -> new IllegalArgumentException("없는 지역입니다.")));
+        setLocation(projectRequestDTO, project);
 
         createMemberProject(project, uid);
 
@@ -59,6 +55,14 @@ public class ProjectService {
         createProjectHeadCount(projectRequestDTO, project);
 
         saveProject(project);
+    }
+
+    private void setLocation(ProjectRequestDTO projectRequestDTO, Project project) {
+        String location = projectRequestDTO.getLocation();
+        if (location != null) {
+            project.setLocation(locationRepository.findByName(location)
+                    .orElseThrow(() -> new IllegalArgumentException("없는 지역입니다.")));
+        }
     }
 
     private void createProjectHeadCount(ProjectRequestDTO projectRequestDTO, Project project) {

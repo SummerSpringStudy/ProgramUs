@@ -23,6 +23,10 @@ public class Location {
 
     private String name;
 
+    public Location(String name) {
+        this.name = name;
+    }
+
     @OneToMany(mappedBy = "location", cascade = CascadeType.ALL)
     private final List<Project> projects = new ArrayList<>();
 
