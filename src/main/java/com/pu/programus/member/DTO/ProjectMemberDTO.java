@@ -16,7 +16,7 @@ public class ProjectMemberDTO {
     public static ProjectMemberDTO make(MemberProject memberProject){
         return ProjectMemberDTO.builder()
                 .userName(memberProject.getMember().getUsername())
-                .position(memberProject.getPosition())
+                .position(memberProject.getPosition().getName())
                 .build();
     }
 }

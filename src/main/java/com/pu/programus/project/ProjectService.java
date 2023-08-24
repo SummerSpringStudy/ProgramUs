@@ -51,7 +51,7 @@ public class ProjectService {
         String location = projectRequestDTO.getLocation();
         project.setLocation(locationRepository.findByName(location)
                 .orElseThrow(() -> new IllegalArgumentException("없는 지역입니다.")));
-        
+
         createMemberProject(project, uid);
 
         createMemberKeyword(projectRequestDTO, project);
