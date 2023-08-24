@@ -17,4 +17,6 @@ public interface ProjectRepository extends JpaRepository<Project, Long> {
             "group by p " +
             "order by p.id DESC")
     List<Project> findAllByLocationAndPosition(String location, String position, Pageable pageable);
+
+    List<Project> findByTitleContains(String title);
 }

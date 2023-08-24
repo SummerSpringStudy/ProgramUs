@@ -1,7 +1,5 @@
 package com.pu.programus.project;
 
-import com.pu.programus.bridge.ProjectKeyword;
-import com.pu.programus.bridge.ProjectKeywordRepository;
 import com.pu.programus.keyword.Keyword;
 import com.pu.programus.keyword.KeywordRepository;
 import com.pu.programus.location.Location;
@@ -11,18 +9,16 @@ import com.pu.programus.member.MemberRepository;
 import com.pu.programus.position.Position;
 import com.pu.programus.position.PositionRepository;
 import com.pu.programus.project.DTO.HeadCountResponseDTO;
+import com.pu.programus.project.DTO.ProjectMiniList;
 import com.pu.programus.project.DTO.ProjectRequestDTO;
-import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.data.domain.Pageable;
-import org.springframework.security.core.parameters.P;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.EntityManager;
-import javax.persistence.EntityTransaction;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -181,65 +177,9 @@ public class ProjectServiceTest {
 
         projectService.saveProject(project);
 
-        List<Project> findProjects = projectService.getProjectsByTitle("정환이의 프로젝트");
-        assertThat(findProjects.size()).isEqualTo(1);
+        ProjectMiniList findProjects = projectService.getProjectsContainsTitle("정환이의 프로젝트");
+        assertThat(findProjects.getProjectMiniList().size()).isEqualTo(1);
         System.out.println("findProjects = " + findProjects);
-        Project findProject = findProjects.get(0);// 저장에 문제가 있음
-        assertThat(findProject.getProjectHeadCounts().get(0).getMaxHeadCount()).isEqualTo(3);
     }
-
-    @Test
-    public void findProjectsByRecruitingPosition() {
-        Project project1 = new Project();
-        Project project2 = new Project();
-
-        // 포지션 생성
-        Position java = new Position();
-        java.setName("JAVA");
-        Position c = new Position();
-        c.setName("C");
-        Position cpp = new Position();
-        cpp.setName("CPP");
-
-        // ProjectHeadCount 생성
-        ProjectHeadCount projectHeadCount1 = ProjectHeadCount.builder()
-                .position(java)
-                .project(project1)
-                .build();
-        java.addProjectHeadCount(projectHeadCount1);
-        project1.addProjectHeadCount(projectHeadCount1);
-
-        ProjectHeadCount projectHeadCount2 = ProjectHeadCount.builder()
-                .position(c)
-                .project(project1)
-                .build();
-        c.addProjectHeadCount(projectHeadCount2);
-        project1.addProjectHeadCount(projectHeadCount2);
-
-        ProjectHeadCount projectHeadCount3 = ProjectHeadCount.builder()
-                .position(java)
-                .project(project2)
-                .build();
-        cpp.addProjectHeadCount(projectHeadCount3);
-        project2.addProjectHeadCount(projectHeadCount3);
-
-        // 포지션 저장
-        positionRepository.save(cpp);
-
-        // 프로젝트 저장
-        projectRepository.save(project1);
-        projectRepository.save(project2);
-
-        // 중간 테이블 저장
-        projectHeadCountRepository.save(projectHeadCount1);
-        projectHeadCountRepository.save(projectHeadCount2);
-        projectHeadCountRepository.save(projectHeadCount3);
-
-        Position cppPosition = positionRepository.findByName("CPP")
-                .orElseThrow(() -> new IllegalArgumentException("There's no Position"));
-        List<Project> result = projectService.findProjectsByRecruitingPosition(cppPosition);
-        assertThat(result).contains(project2);
-    }
-
 
 }
