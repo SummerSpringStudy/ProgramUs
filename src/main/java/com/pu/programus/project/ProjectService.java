@@ -4,6 +4,7 @@ import com.pu.programus.bridge.MemberProject;
 import com.pu.programus.bridge.MemberProjectRepository;
 import com.pu.programus.bridge.ProjectKeyword;
 import com.pu.programus.bridge.ProjectKeywordRepository;
+import com.pu.programus.keyword.Keyword;
 import com.pu.programus.keyword.KeywordRepository;
 import com.pu.programus.location.LocationRepository;
 import com.pu.programus.member.Member;
@@ -20,11 +21,11 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
-import javax.persistence.EntityManager;
 import javax.transaction.Transactional;
-import java.security.Key;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.NoSuchElementException;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Slf4j
@@ -42,13 +43,14 @@ public class ProjectService {
     private final KeywordRepository keywordRepository;
     private final MemberRepository memberRepository;
 
-    //Todo: DTO에서 id 항목 제외
     public void create(String uid, ProjectRequestDTO projectRequestDTO) {
 
         log.info("[create] projectRequestDTO: {}", projectRequestDTO);
         String location = projectRequestDTO.getLocation();
-        //Todo: exception 추가하기
-        Member member = memberRepository.findByUid(uid).orElseThrow();
+
+        Member member = memberRepository.findByUid(uid)
+                .orElseThrow(() -> new NoSuchElementException("존재하지 않는 회원입니다."));
+
         List<String> keywords = projectRequestDTO.getKeywords();
         List<HeadCountResponseDTO> projectHeadCounts = projectRequestDTO.getProjectHeadCounts();
 
@@ -74,18 +76,23 @@ public class ProjectService {
         memberProjectRepository.save(memberProject);
 
         log.info("[create] save project");
-/*
+
         for(String s : keywords){
             ProjectKeyword projectKeyword = new ProjectKeyword();
+
+            Optional<Keyword> optionalKeyword = keywordRepository.findByValue(s);
+            Keyword keyword = optionalKeyword.orElseGet(Keyword::new);
+
+            if(keyword.getValue() == null || keyword.getValue().isEmpty()){
+                keyword.setValue(s);
+                keywordRepository.save(keyword);
+                log.info("[create] Keyword save: {}", keyword);
+            }
+
             projectKeyword.setProject(project);
-            //Todo: exception 추가하기
-            //Todo: 없을 경우 생성로직으로 해야함
-            projectKeyword.setKeyword(keywordRepository.findByValue(s)
-                    .orElseThrow(() -> new IllegalArgumentException("없는 키워드입니다.")));
+            projectKeyword.setKeyword(keyword);
             projectKeywordRepository.save(projectKeyword);
         }
-
- */
 
         for(HeadCountResponseDTO h : projectHeadCounts){
             ProjectHeadCount projectHeadCount = new ProjectHeadCount();
@@ -104,6 +111,20 @@ public class ProjectService {
 
     public void modify(Long id, Member member) {
 
+    }
+
+    public void delete(String uid, Long projectId){
+        Member member = memberRepository.findByUid(uid)
+                .orElseThrow(() -> new NoSuchElementException("존재하지 않는 회원입니다."));
+
+        // Todo: 멤버가 삭제 권한이 있는지 (그룹장인지) 확인 필요
+
+        Project project = projectRepository.findById(projectId)
+                .orElseThrow(() -> new NoSuchElementException("존재하지 않는 게시글입니다."));
+
+        log.info("[delete] project: {}", project);
+
+        projectRepository.delete(project);
     }
 
     public void show(Long id, Member member) {
@@ -145,8 +166,23 @@ public class ProjectService {
     }
 
     public List<ProjectMiniResponseDTO> getMiniProjects(String location, String position, Pageable pageable){
-        return projectRepository.findAllByLocationAndPosition(location, position, Pageable.ofSize(10))
-                .stream()
+
+        List<Project> projects;
+
+        if(location.equals("전체") && position.equals("전체")) {
+            projects = projectRepository.findAll();
+        }
+        else if (location.equals("전체")){
+            projects = projectRepository.findAllByPosition(position, pageable);
+        }
+        else if (position.equals("전체")){
+            projects = projectRepository.findAllByLocation(location, pageable);
+        }
+        else {
+            projects = projectRepository.findAllByLocationAndPosition(location, position, pageable);
+        }
+
+        return projects.stream()
                 .map(ProjectMiniResponseDTO::make)
                 .collect(Collectors.toList());
     }

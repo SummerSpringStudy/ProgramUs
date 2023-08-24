@@ -1,9 +1,7 @@
 package com.pu.programus.project.DTO;
 
 
-import com.pu.programus.member.DTO.ProjectMemberDTO;
-import com.pu.programus.member.Member;
-import com.pu.programus.project.ProjectHeadCount;
+
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -16,7 +14,6 @@ import java.util.List;
 @NoArgsConstructor
 public class ProjectRequestDTO {
 
-    private String uid;
     private String title;
     private String location;
     private String description;

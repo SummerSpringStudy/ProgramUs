@@ -24,10 +24,10 @@ public class ProjectController {
     private final JwtTokenProvider jwtTokenProvider;
 
     @GetMapping("/mini")
-    public List<ProjectMiniResponseDTO> getProjects(@RequestParam(value="location", defaultValue = "전체") String location,
+    public ResponseEntity<List<ProjectMiniResponseDTO>> getProjects(@RequestParam(value="location", defaultValue = "전체") String location,
                                                     @RequestParam(value="position", defaultValue = "전체") String position,
                                                     Pageable pageable){
-        return projectService.getMiniProjects(location, position, pageable);
+        return ResponseEntity.ok(projectService.getMiniProjects(location, position, pageable));
     }
 
     @GetMapping("/{projectId}")
@@ -43,5 +43,12 @@ public class ProjectController {
         log.info("[createProject] uid: {}", uid);
         projectService.create(uid, projectRequestDTO);
         log.info("[createProject] 프로젝트 생성 완료");
+    }
+
+    @PUTokenApiImplicitParams
+    @DeleteMapping()
+    public void deleteProject(@RequestHeader(SecurityConfiguration.TOKEN_HEADER) String token, @RequestParam Long projectId){
+        String uid = jwtTokenProvider.getUid(token);
+        projectService.delete(uid, projectId);
     }
 }
