@@ -103,7 +103,7 @@ public class ProjectService {
         MemberProject memberProject = new MemberProject();
         memberProject.setProject(project);
         memberProject.setMember(member);
-        memberProject.setPosition("미정");
+        memberProject.setPosition(member.getPosition());
         project.addMemberProject(memberProject);
 
         member.addMemberProject(memberProject);
