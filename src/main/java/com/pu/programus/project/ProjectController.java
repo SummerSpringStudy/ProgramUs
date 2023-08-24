@@ -51,4 +51,14 @@ public class ProjectController {
         String uid = jwtTokenProvider.getUid(token);
         projectService.delete(uid, projectId);
     }
+
+    @PUTokenApiImplicitParams
+    @PostMapping("/apply")
+    public void applyProject(@RequestHeader(SecurityConfiguration.TOKEN_HEADER) String token,
+                             @RequestParam Long projectId,
+                             @RequestParam String positionName) {
+        String uid = jwtTokenProvider.getUid(token);
+        projectService.apply(projectId, positionName, uid);
+    }
+
 }

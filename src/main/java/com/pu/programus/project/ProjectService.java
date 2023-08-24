@@ -16,7 +16,6 @@ import com.pu.programus.project.DTO.ProjectMiniResponseDTO;
 import com.pu.programus.project.DTO.ProjectRequestDTO;
 import com.pu.programus.project.DTO.ProjectResponseDTO;
 import lombok.RequiredArgsConstructor;
-
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -190,7 +189,59 @@ public class ProjectService {
 
     public ProjectResponseDTO getProjectById(Long projectId) {
         return ProjectResponseDTO.make(projectRepository.findById(projectId)
-                .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 프로젝트 ID입니다.")));
+                .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 프로젝트 ID 입니다.")));
     }
 
+    public void apply(Long projectId, String positionName, String uid) {
+        Project project = projectRepository.findById(projectId)
+                .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 프로젝트 ID 입니다."));
+        ProjectHeadCount recruitInfo = getRecruitInfo(project.getProjectHeadCounts(), positionName);
+
+        validateDuplicateApply(uid, project.getMemberProjects());
+        validateApply(recruitInfo);
+
+        increaseNowHeadCount(recruitInfo);
+
+        Member member = memberRepository.findByUid(uid)
+                .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 uid 입니다."));
+        MemberProject memberProject = new MemberProject();
+        memberProject.setProject(project);
+        memberProject.setMember(member);
+
+        // 추가
+        project.addMemberProject(memberProject);
+
+        // save
+        memberProjectRepository.save(memberProject);
+        projectRepository.save(project);
+    }
+
+    private void increaseNowHeadCount(ProjectHeadCount recruitInfo) {
+        recruitInfo.setNowHeadCount(recruitInfo.getNowHeadCount() + 1);
+    }
+
+    private void validateDuplicateApply(String uid, List<MemberProject> memberProjects) {
+        if (isAlreadyApply(uid, memberProjects))
+            throw new IllegalArgumentException("이미 지원한 모집 분야입니다.");
+    }
+
+    private boolean isAlreadyApply(String uid, List<MemberProject> memberProjects) {
+        return memberProjects.stream().anyMatch(e -> e.getMember().getUid().equals(uid));
+    }
+
+    private void validateApply(ProjectHeadCount recruitInfo) {
+        if (isHeadCountFull(recruitInfo))
+            throw new IllegalArgumentException("지원한 모집 분야의 인원이 가득 찼습니다.");
+    }
+
+    private static boolean isHeadCountFull(ProjectHeadCount recruitInfo) {
+        return recruitInfo.getMaxHeadCount() == recruitInfo.getNowHeadCount();
+    }
+
+    private ProjectHeadCount getRecruitInfo(List<ProjectHeadCount> projectHeadCounts, String positionName) {
+        return projectHeadCounts.stream()
+                .filter(e -> e.getPosition().getName().equals(positionName))
+                .findFirst()
+                .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 모집 분야입니다."));
+    }
 }

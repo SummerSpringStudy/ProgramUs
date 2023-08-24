@@ -1,6 +1,8 @@
 package com.pu.programus.member;
 
 import com.pu.programus.bridge.MemberProject;
+import com.pu.programus.location.Location;
+import com.pu.programus.location.LocationRepository;
 import com.pu.programus.member.DTO.MemberDTO;
 import com.pu.programus.member.DTO.EditMemberDto;
 import com.pu.programus.position.DTO.PositionDTO;
@@ -25,6 +27,7 @@ public class MemberService {
 
     private final MemberRepository memberRepository;
     private final PositionRepository positionRepository;
+    private final LocationRepository locationRepository;
 
     public MemberDTO getProfile(String id) {
         Member member = memberRepository.findByUid(id)
@@ -70,22 +73,20 @@ public class MemberService {
     //Todo: Exception 만들기??
     public void editMember(String uid, EditMemberDto editMemberDto) {
         Member member = memberRepository.findByUid(uid)
-                .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 ID입니다."));
+                .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 ID 입니다."));
 
         //Todo: 괜찮은지??
         editMemberDto.editPrimitiveType(member);
 
         //Todo: 잘 반영되는지 체크
-        editMemberPositionByPositionName(editMemberDto, member);
+        editPosition(editMemberDto, member);
 
         memberRepository.save(member);
     }
 
-    private void editMemberPositionByPositionName(EditMemberDto editMemberDto, Member member) {
-        String positionName = editMemberDto.getPosition();
-        Position position = positionRepository.findByName(positionName)
-                .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 Positon입니다."));
-
+    private void editPosition(EditMemberDto editMemberDto, Member member) {
+        Position position = positionRepository.findByName(editMemberDto.getPosition())
+                .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 Position 입니다."));
         member.setPosition(position);
     }
 }

@@ -28,13 +28,14 @@ public class PositionService {
         Position position = Position.builder()
                 .name(positionName)
                 .build();
-
-        // Todo: 중복검사
+        validateDuplicate(positionName);
         Position savedPosition = positionRepository.save(position);
-        // Todo: 새로 익셉션 만들기?
-        if (savedPosition == null)
-            throw new IOException("저장에 실패했습니다.");
+            }
+
+    private void validateDuplicate(String positionName) {
+        if (positionRepository.findByName(positionName).isPresent())
+            throw new IllegalArgumentException("이미 존재하는 모집 분야 입니다.");
     }
-    
+
     //포지션 기준으로 프로젝트 조회
 }
