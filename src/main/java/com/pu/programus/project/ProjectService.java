@@ -147,30 +147,17 @@ public class ProjectService {
         }
         projectRepository.save(project);
     }
-    
-    // Todo: editProject필요
 
-    // Comment: 필요없어짐
-    /*
-    public List<Project> findProjectsByRecruitingPosition(Position pos) {
-        List<ProjectHeadCount> projectHeadCounts = positionRepository.findByName(pos.getName())
-                .orElseThrow(() -> new IllegalArgumentException("Cannot find " + pos.getName()))
-                .getProjectHeadCounts();
-        return getProjectsFromProjectHeadCounts(projectHeadCounts);
+    public void apply(Long projectId, String positionName, String uid) {
+        Project project = findProject(projectId);
+        validateDuplicateApply(uid, project.getMemberProjects());
+        updateHeadCountByPositionName(project, positionName);
+        addMemberToProject(uid, project);
     }
-     */
 
     // Todo: 제목 조회 api만들기
     public List<Project> getProjectsByTitle(String title) {
         return projectRepository.findByTitle(title);
-    }
-
-    private List<Project> getProjectsFromProjectHeadCounts(List<ProjectHeadCount> projectHeadCounts) {
-        List<Project> result = new ArrayList<>();
-        for (ProjectHeadCount projectHeadCount : projectHeadCounts) {
-            result.add(projectHeadCount.getProject());
-        }
-        return result;
     }
 
     public ProjectMiniList getProjectMiniList(String location, String position, Pageable pageable){
@@ -188,13 +175,6 @@ public class ProjectService {
     public ProjectResponseDTO getProjectById(Long projectId) {
         return ProjectResponseDTO.make(projectRepository.findById(projectId)
                 .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 프로젝트 ID 입니다.")));
-    }
-
-    public void apply(Long projectId, String positionName, String uid) {
-        Project project = findProject(projectId);
-        validateDuplicateApply(uid, project.getMemberProjects());
-        updateHeadCountByPositionName(project, positionName);
-        addMemberToProject(uid, project);
     }
 
     private Project findProject(Long projectId) {
