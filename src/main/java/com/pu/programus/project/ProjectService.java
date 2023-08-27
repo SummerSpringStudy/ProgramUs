@@ -137,6 +137,7 @@ public class ProjectService {
             projectKeywordRepository.save(projectKeyword);
         }
 
+        // apply 시 에러 발생
         for (MemberProject memberProject : project.getMemberProjects()) {
             memberProjectRepository.save(memberProject);
         }
@@ -190,23 +191,32 @@ public class ProjectService {
     }
 
     public void apply(Long projectId, String positionName, String uid) {
-        Project project = projectRepository.findById(projectId)
-                .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 프로젝트 ID 입니다."));
-        ProjectHeadCount recruitInfo = getRecruitInfo(project.getProjectHeadCounts(), positionName);
-
+        Project project = findProject(projectId);
         validateDuplicateApply(uid, project.getMemberProjects());
-        validateApply(recruitInfo);
+        updateHeadCountByPositionName(project, positionName);
+        addMemberToProject(uid, project);
+    }
 
-        increaseNowHeadCount(recruitInfo);
+    private Project findProject(Long projectId) {
+        return projectRepository.findById(projectId)
+                .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 프로젝트 ID 입니다."));
+    }
 
+    private void addMemberToProject(String uid, Project project) {
         Member member = memberRepository.findByUid(uid)
                 .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 uid 입니다."));
         MemberProject memberProject = new MemberProject();
         memberProject.setProject(project);
         memberProject.setMember(member);
         project.addMemberProject(memberProject);
+        projectRepository.save(project);
+    }
 
-        saveProject(project);
+    private void updateHeadCountByPositionName(Project project, String positionName) {
+        ProjectHeadCount recruitInfo = getRecruitInfo(project.getProjectHeadCounts(), positionName);
+        validateApply(recruitInfo);
+        increaseNowHeadCount(recruitInfo);
+        projectHeadCountRepository.save(recruitInfo);
     }
 
     private void increaseNowHeadCount(ProjectHeadCount recruitInfo) {
