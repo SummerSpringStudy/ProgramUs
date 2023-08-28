@@ -71,7 +71,7 @@ public class ProjectController {
     }
 
     @PUTokenApiImplicitParams
-    @PostMapping("/cancle")
+    @PostMapping("/cancel")
     public void cancelApply(@RequestHeader(SecurityConfiguration.TOKEN_HEADER) String token,
                             @RequestParam Long projectId,
                             @RequestParam String positionName) {

@@ -9,6 +9,7 @@ import com.pu.programus.keyword.KeywordRepository;
 import com.pu.programus.location.LocationRepository;
 import com.pu.programus.member.Member;
 import com.pu.programus.member.MemberRepository;
+import com.pu.programus.position.Position;
 import com.pu.programus.position.PositionRepository;
 import com.pu.programus.project.DTO.*;
 import lombok.RequiredArgsConstructor;
@@ -198,7 +199,7 @@ public class ProjectService {
         Project project = findProject(projectId);
         validateDuplicateApply(uid, project.getMemberProjects());
         applyUpdateHeadCount(project, positionName);
-        addMemberToProject(uid, project);
+        addMemberToProject(uid, project, positionName);
     }
 
     public void cancelApply(Long projectId, String positionName, String uid) {
@@ -244,10 +245,15 @@ public class ProjectService {
                 .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 프로젝트 ID 입니다."));
     }
 
-    private void addMemberToProject(String uid, Project project) {
+    private void addMemberToProject(String uid, Project project, String positionName) {
         Member member = findMember(uid);
-        connectMemberProject(project, member);
-        saveProject(project);
+        Position position = findPosition(positionName);
+        connectMemberProject(project, member, position);
+        projectRepository.save(project);
+    }
+
+    private Position findPosition(String positionName) {
+        return positionRepository.findByName(positionName).orElseThrow(() -> new IllegalArgumentException("존재하지 않는 모집 분야입니다."));
     }
 
     private void removeMemberFromProject(String uid, Project project) {
@@ -266,10 +272,11 @@ public class ProjectService {
         member.getMemberProjects().removeIf(p -> p.getId().equals(project.getId()));
     }
 
-    private void connectMemberProject(Project project, Member member) {
+    private void connectMemberProject(Project project, Member member, Position position) {
         MemberProject memberProject = new MemberProject();
         memberProject.setProject(project);
         memberProject.setMember(member);
+        memberProject.setPosition(position);
         project.addMemberProject(memberProject);
         projectRepository.save(project);
     }

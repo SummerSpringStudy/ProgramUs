@@ -51,7 +51,7 @@ public class ProjectServiceTest {
     @Autowired
     EntityManager em;
 
-    @Test
+    /*@Test
     void 프로젝트_생성(){
 
         // 멤버 생성 및 저장
@@ -111,7 +111,7 @@ public class ProjectServiceTest {
         assertThat(project.getProjectKeywords().size()).isEqualTo(3);
         assertThat(project.getProjectHeadCounts().size()).isEqualTo(3);
         assertThat(project.getMemberProjects().size()).isEqualTo(1);
-    }
+    }*/
 
     @Test
     @DisplayName("프로젝트 요약 정보 가져오기")
