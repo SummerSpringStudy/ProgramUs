@@ -17,7 +17,6 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.Optional;
@@ -194,7 +193,7 @@ public class ProjectService {
 
     private void updateHeadCountByPositionName(Project project, String positionName) {
         ProjectHeadCount recruitInfo = getRecruitInfo(project.getProjectHeadCounts(), positionName);
-        validateApply(recruitInfo);
+        validateApplicant(recruitInfo);
         increaseNowHeadCount(recruitInfo);
         projectHeadCountRepository.save(recruitInfo);
     }
@@ -212,7 +211,7 @@ public class ProjectService {
         return memberProjects.stream().anyMatch(e -> e.getMember().getUid().equals(uid));
     }
 
-    private void validateApply(ProjectHeadCount recruitInfo) {
+    private void validateApplicant(ProjectHeadCount recruitInfo) {
         if (isHeadCountFull(recruitInfo))
             throw new IllegalArgumentException("지원한 모집 분야의 인원이 가득 찼습니다.");
     }
