@@ -2,6 +2,7 @@ package com.pu.programus.project;
 
 import com.pu.programus.annotation.PUTokenApiImplicitParams;
 import com.pu.programus.config.security.SecurityConfiguration;
+import com.pu.programus.exception.AuthorityException;
 import com.pu.programus.jwt.JwtTokenProvider;
 import com.pu.programus.project.DTO.ProjectMiniList;
 import com.pu.programus.project.DTO.ProjectRequestDTO;
@@ -22,9 +23,9 @@ public class ProjectController {
     private final JwtTokenProvider jwtTokenProvider;
 
     @GetMapping("/mini")
-    public ResponseEntity<ProjectMiniList> getProjectMiniList(@RequestParam(required = false) String location, @RequestParam(required = false) String position, Pageable pageable){
+    public ResponseEntity<ProjectMiniList> getProjectMiniList(@RequestParam(required = false) String title, @RequestParam(required = false) String location, @RequestParam(required = false) String position, Pageable pageable){
 
-        ProjectMiniList projectMiniList = projectService.getProjectMiniList(location, position, pageable);
+        ProjectMiniList projectMiniList = projectService.getProjectMiniList(title, location, position, pageable);
         return ResponseEntity.ok(projectMiniList);
     }
 
@@ -49,14 +50,14 @@ public class ProjectController {
 
     @PUTokenApiImplicitParams
     @PutMapping("/{projectId}")
-    public void updateProject(@RequestHeader(SecurityConfiguration.TOKEN_HEADER) String token, @PathVariable Long projectId, @RequestBody ProjectRequestDTO projectRequestDTO){
+    public void updateProject(@RequestHeader(SecurityConfiguration.TOKEN_HEADER) String token, @PathVariable Long projectId, @RequestBody ProjectRequestDTO projectRequestDTO) throws AuthorityException {
         String uid = jwtTokenProvider.getUid(token);
         projectService.update(uid, projectId, projectRequestDTO);
     }
 
     @PUTokenApiImplicitParams
     @DeleteMapping()
-    public void deleteProject(@RequestHeader(SecurityConfiguration.TOKEN_HEADER) String token, @RequestParam Long projectId){
+    public void deleteProject(@RequestHeader(SecurityConfiguration.TOKEN_HEADER) String token, @RequestParam Long projectId) throws AuthorityException{
         String uid = jwtTokenProvider.getUid(token);
         projectService.delete(uid, projectId);
     }
@@ -68,12 +69,6 @@ public class ProjectController {
                              @RequestParam String positionName) {
         String uid = jwtTokenProvider.getUid(token);
         projectService.apply(projectId, positionName, uid);
-    }
-
-    @GetMapping("/contain/{title}")
-    public ResponseEntity<ProjectMiniList> getProjectContainsTitle(@RequestParam String title) {
-        ProjectMiniList projectMiniList = projectService.getProjectsContainsTitle(title);
-        return ResponseEntity.ok(projectMiniList);
     }
 
 }

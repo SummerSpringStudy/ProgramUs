@@ -40,11 +40,11 @@ public class Member implements UserDetails {
     @Builder.Default
     private Position position = new Position(); // 카테고리로 바꾸기
 
-    @OneToMany(mappedBy = "member", cascade = CascadeType.ALL)
-    private List<Project> projects = new ArrayList<>();
+    @OneToMany(mappedBy = "owner", cascade = CascadeType.ALL)
+    private List<Project> ownerProjects = new ArrayList<>();
 
     @OneToMany(mappedBy = "member", cascade = CascadeType.ALL, orphanRemoval = true) // mappedBy로 참조하는 외래키임을 명시
-    private final List<MemberProject> memberProjects = new ArrayList<>();
+    private List<MemberProject> memberProjects = new ArrayList<>();
 
     //Todo: 변경하기??
     @ElementCollection(fetch = FetchType.EAGER)

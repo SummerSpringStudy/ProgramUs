@@ -27,7 +27,7 @@ public class Location {
         this.name = name;
     }
 
-    @OneToMany(mappedBy = "location", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "location", cascade = CascadeType.PERSIST)
     private final List<Project> projects = new ArrayList<>();
 
     public void add(Project project) {

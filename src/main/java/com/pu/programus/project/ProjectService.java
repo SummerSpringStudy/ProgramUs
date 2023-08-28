@@ -4,9 +4,9 @@ import com.pu.programus.bridge.MemberProject;
 import com.pu.programus.bridge.MemberProjectRepository;
 import com.pu.programus.bridge.ProjectKeyword;
 import com.pu.programus.bridge.ProjectKeywordRepository;
+import com.pu.programus.exception.AuthorityException;
 import com.pu.programus.keyword.Keyword;
 import com.pu.programus.keyword.KeywordRepository;
-import com.pu.programus.location.Location;
 import com.pu.programus.location.LocationRepository;
 import com.pu.programus.member.Member;
 import com.pu.programus.member.MemberRepository;
@@ -15,6 +15,7 @@ import com.pu.programus.project.DTO.*;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Pageable;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
@@ -61,7 +62,7 @@ public class ProjectService {
     private void setProjectOwner(String uid, Project project) {
         Member member = memberRepository.findByUid(uid)
                 .orElseThrow(() -> new IllegalArgumentException("uid 가 존재하지 않습니다."));
-        project.setMember(member);
+        project.setOwner(member);
     }
 
     private void setLocation(ProjectRequestDTO projectRequestDTO, Project project) {
@@ -132,17 +133,27 @@ public class ProjectService {
                 .build();
     }
 
-    public void update(String uid, Long projectId, ProjectRequestDTO projectRequestDTO){
+    public void update(String uid, Long projectId, ProjectRequestDTO projectRequestDTO) throws AuthorityException{
 
         Project project = projectRepository.findById(projectId)
                 .orElseThrow(() -> new NoSuchElementException("존재하지 않는 게시글입니다."));
 
-        //  owner 검증
-        String ownerUid = project.getMember().getUid();
+        checkOwner(project, uid);
 
         updateProjectData(projectRequestDTO, project);
 
-        saveProject(project);
+        log.info("complete update");
+
+//        saveProject(project);
+    }
+
+    private void checkOwner(Project project, String checkUid) throws AuthorityException {
+
+        String ownerUid = project.getOwner().getUid();
+
+        if(!ownerUid.equals(checkUid)){
+             throw new AuthorityException(HttpStatus.FORBIDDEN, "권한이 없습니다.");
+         }
     }
 
     private void updateProjectData(ProjectRequestDTO projectRequestDTO, Project project) {
@@ -155,44 +166,45 @@ public class ProjectService {
         project.setEndTime(projectRequestDTO.getEndTime());
         setLocation(projectRequestDTO, project);
 
-        createProjectHeadCount(projectRequestDTO, project);
         createMemberKeyword(projectRequestDTO, project);
+        createProjectHeadCount(projectRequestDTO, project);
     }
 
     private void clear(Project project) {
         projectHeadCountRepository.deleteAllByProject(project);
         projectKeywordRepository.deleteAllByProject(project);
+        project.clear();
     }
 
 
-    public void delete(String uid, Long projectId){
-        Member member = memberRepository.findByUid(uid)
-                .orElseThrow(() -> new NoSuchElementException("존재하지 않는 회원입니다."));
-
-        // Todo: 멤버가 삭제 권한이 있는지 (그룹장인지) 확인 필요
-
+    public void delete(String uid, Long projectId) throws AuthorityException{
         Project project = projectRepository.findById(projectId)
                 .orElseThrow(() -> new NoSuchElementException("존재하지 않는 게시글입니다."));
 
-        log.info("[delete] project: {}", project);
+        checkOwner(project, uid);
 
         projectRepository.delete(project);
     }
 
     public void saveProject(Project project) {
         for (ProjectKeyword projectKeyword : project.getProjectKeywords()) {
+            log.info("ProjectKeyword save {}", projectKeyword);
             projectKeywordRepository.save(projectKeyword);
         }
 
         // apply 시 에러 발생
         for (MemberProject memberProject : project.getMemberProjects()) {
+            log.info("MemberProject save {}", memberProject);
             memberProjectRepository.save(memberProject);
         }
 
         for (ProjectHeadCount projectHeadCount : project.getProjectHeadCounts()) {
+            log.info("ProjectHeadCount save {}", projectHeadCount);
             projectHeadCountRepository.save(projectHeadCount);
         }
+
         projectRepository.save(project);
+        log.info("Project save {}", project);
     }
 
     public void apply(Long projectId, String positionName, String uid) {
@@ -202,18 +214,9 @@ public class ProjectService {
         addMemberToProject(uid, project);
     }
 
-    // Todo: 제목 조회 api만들기
-    public ProjectMiniList getProjectsContainsTitle(String title) {
-        List<Project> projects = projectRepository.findByTitleContains(title);
-        List<ProjectMiniResponseDTO> projectMiniResponseDTOS = projects.stream()
-                .map(ProjectMiniResponseDTO::make)
-                .collect(Collectors.toList());
-        return new ProjectMiniList(projectMiniResponseDTOS);
-    }
+    public ProjectMiniList getProjectMiniList(String title, String location, String position, Pageable pageable){
 
-    public ProjectMiniList getProjectMiniList(String location, String position, Pageable pageable){
-
-        List<Project> projects = projectRepository.findAllByLocationAndPosition(location, position, pageable);
+        List<Project> projects = projectRepository.findAllByLocationAndPosition(title, location, position, pageable);
 
         List<ProjectMiniResponseDTO> projectMiniResponseDTOS = projects.stream()
                 .map(ProjectMiniResponseDTO::make)
