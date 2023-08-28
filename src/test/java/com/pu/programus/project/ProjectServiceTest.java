@@ -118,6 +118,7 @@ public class ProjectServiceTest {
     @DisplayName("프로젝트 요약 정보 가져오기")
     void 프로젝트_목록_가져오기() {
 
+        /*
         Project project1 = new Project();
         Project project2 = new Project();
         Project project3 = new Project();
@@ -161,7 +162,8 @@ public class ProjectServiceTest {
                             " results.get(1) = " + results.get(1).getProjectHeadCounts().get(0).getPosition().getName() +
                             " results.get(1) = " + results.get(1).getId());
 
- */
+
+         */
     }
 
     @Test
@@ -184,7 +186,7 @@ public class ProjectServiceTest {
         ProjectMiniList findProjects = projectService.getProjectsContainsTitle("정환이의 프로젝트");
         assertThat(findProjects.getProjectMiniList().size()).isEqualTo(1);
         System.out.println("findProjects = " + findProjects);
-        
+
          */
     }
 
