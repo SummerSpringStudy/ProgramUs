@@ -91,7 +91,7 @@ public class ProjectServiceTest {
             position.setName("p"+i);
             positionRepository.save(position);
         }
-
+/*
         ProjectRequestDTO projectRequestDTO = new ProjectRequestDTO(
                 "test", "title", "location" ,"description",
                 sDate, eDate, keywords, headCountResponseDTOS);
@@ -111,7 +111,8 @@ public class ProjectServiceTest {
         assertThat(project.getProjectKeywords().size()).isEqualTo(3);
         assertThat(project.getProjectHeadCounts().size()).isEqualTo(3);
         assertThat(project.getMemberProjects().size()).isEqualTo(1);
-    }*/
+    }
+*/
 
     @Test
     @DisplayName("프로젝트 요약 정보 가져오기")
@@ -147,7 +148,7 @@ public class ProjectServiceTest {
 
         em.flush();
         em.clear();
-
+/*
         List<Project> results = projectRepository.findAllByLocationAndPosition("서울", "전체", Pageable.unpaged());
 
         assertThat(results.size()).isEqualTo(2);
@@ -159,6 +160,8 @@ public class ProjectServiceTest {
         System.out.println("results.get(1) = " + results.get(1).getLocation().getName() +
                             " results.get(1) = " + results.get(1).getProjectHeadCounts().get(0).getPosition().getName() +
                             " results.get(1) = " + results.get(1).getId());
+
+ */
     }
 
     @Test

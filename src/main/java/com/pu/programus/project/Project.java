@@ -3,7 +3,7 @@ package com.pu.programus.project;
 import com.pu.programus.bridge.MemberProject;
 import com.pu.programus.bridge.ProjectKeyword;
 import com.pu.programus.location.Location;
-import com.pu.programus.member.DTO.ProjectMemberDTO;
+import com.pu.programus.project.DTO.ProjectMemberDTO;
 import com.pu.programus.member.Member;
 import com.pu.programus.project.DTO.HeadCountResponseDTO;
 import lombok.*;
@@ -31,7 +31,7 @@ public class Project {
 
     //owner
     @ManyToOne(fetch = FetchType.LAZY)
-    private Member member;
+    private Member owner;
 
     @OneToMany(mappedBy = "project", cascade = CascadeType.PERSIST)
     @Builder.Default
