@@ -239,7 +239,7 @@ public class ProjectService {
             throw new IllegalArgumentException("지원한 모집 분야의 인원이 가득 찼습니다.");
     }
 
-    private static boolean isHeadCountFull(ProjectHeadCount recruitInfo) {
+    private boolean isHeadCountFull(ProjectHeadCount recruitInfo) {
         return recruitInfo.getMaxHeadCount() == recruitInfo.getNowHeadCount();
     }
 
