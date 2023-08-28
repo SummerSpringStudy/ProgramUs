@@ -21,7 +21,7 @@ import java.util.stream.Collectors;
 @Builder
 public class Project {
 
-    public static final String ALL_LOCATION = "ALL_LOCATION";
+    public static final String ALL_LOCATION = "전체";
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

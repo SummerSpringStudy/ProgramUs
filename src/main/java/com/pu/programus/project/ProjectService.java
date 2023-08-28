@@ -67,10 +67,11 @@ public class ProjectService {
 
     private void setLocation(ProjectRequestDTO projectRequestDTO, Project project) {
         String location = projectRequestDTO.getLocation();
-        if (location != null) {
-            project.setLocation(locationRepository.findByName(location)
-                    .orElseThrow(() -> new IllegalArgumentException("없는 지역입니다.")));
-        }
+        if (location == null)
+            location = Project.ALL_LOCATION;
+
+        project.setLocation(locationRepository.findByName(location)
+                .orElseThrow(() -> new IllegalArgumentException("없는 지역입니다.")));
     }
 
     private void createProjectHeadCount(ProjectRequestDTO projectRequestDTO, Project project) {
