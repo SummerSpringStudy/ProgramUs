@@ -7,7 +7,6 @@ import com.pu.programus.bridge.ProjectKeywordRepository;
 import com.pu.programus.exception.AuthorityException;
 import com.pu.programus.keyword.Keyword;
 import com.pu.programus.keyword.KeywordRepository;
-import com.pu.programus.location.Location;
 import com.pu.programus.location.LocationRepository;
 import com.pu.programus.member.Member;
 import com.pu.programus.member.MemberRepository;
@@ -19,7 +18,6 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
-import javax.naming.AuthenticationException;
 import javax.transaction.Transactional;
 import java.util.List;
 import java.util.NoSuchElementException;
@@ -64,7 +62,7 @@ public class ProjectService {
     private void setProjectOwner(String uid, Project project) {
         Member member = memberRepository.findByUid(uid)
                 .orElseThrow(() -> new IllegalArgumentException("uid 가 존재하지 않습니다."));
-        project.setMember(member);
+        project.setOwner(member);
     }
 
     private void setLocation(ProjectRequestDTO projectRequestDTO, Project project) {
@@ -151,7 +149,7 @@ public class ProjectService {
 
     private void checkOwner(Project project, String checkUid) throws AuthorityException {
 
-        String ownerUid = project.getMember().getUid();
+        String ownerUid = project.getOwner().getUid();
 
         if(!ownerUid.equals(checkUid)){
              throw new AuthorityException(HttpStatus.FORBIDDEN, "권한이 없습니다.");
@@ -180,9 +178,6 @@ public class ProjectService {
 
 
     public void delete(String uid, Long projectId) throws AuthorityException{
-        Member member = memberRepository.findByUid(uid)
-                .orElseThrow(() -> new NoSuchElementException("존재하지 않는 회원입니다."));
-
         Project project = projectRepository.findById(projectId)
                 .orElseThrow(() -> new NoSuchElementException("존재하지 않는 게시글입니다."));
 
