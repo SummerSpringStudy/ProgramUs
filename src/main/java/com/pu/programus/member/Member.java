@@ -2,6 +2,7 @@ package com.pu.programus.member;
 
 import com.pu.programus.bridge.MemberProject;
 import com.pu.programus.position.Position;
+import com.pu.programus.project.Project;
 import lombok.*;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -38,6 +39,9 @@ public class Member implements UserDetails {
     @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     @Builder.Default
     private Position position = new Position(); // 카테고리로 바꾸기
+
+    @OneToMany(mappedBy = "member", cascade = CascadeType.ALL)
+    private List<Project> projects = new ArrayList<>();
 
     @OneToMany(mappedBy = "member", cascade = CascadeType.ALL, orphanRemoval = true) // mappedBy로 참조하는 외래키임을 명시
     private final List<MemberProject> memberProjects = new ArrayList<>();

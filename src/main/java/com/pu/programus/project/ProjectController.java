@@ -48,10 +48,16 @@ public class ProjectController {
     }
 
     @PUTokenApiImplicitParams
+    @PutMapping("/{projectId}")
+    public void updateProject(@RequestHeader(SecurityConfiguration.TOKEN_HEADER) String token, @PathVariable Long projectId, @RequestBody ProjectRequestDTO projectRequestDTO){
+        String uid = jwtTokenProvider.getUid(token);
+        projectService.update(uid, projectId, projectRequestDTO);
+    }
+
+    @PUTokenApiImplicitParams
     @DeleteMapping()
     public void deleteProject(@RequestHeader(SecurityConfiguration.TOKEN_HEADER) String token, @RequestParam Long projectId){
         String uid = jwtTokenProvider.getUid(token);
-
         projectService.delete(uid, projectId);
     }
 
