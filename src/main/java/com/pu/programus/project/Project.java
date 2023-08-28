@@ -31,7 +31,7 @@ public class Project {
 
     //owner
     @ManyToOne(fetch = FetchType.LAZY)
-    private Member member;
+    private Member owner;
 
     @OneToMany(mappedBy = "project", cascade = CascadeType.ALL)
     @Builder.Default
