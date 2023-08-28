@@ -44,7 +44,7 @@ public class Member implements UserDetails {
     private List<Project> ownerProjects = new ArrayList<>();
 
     @OneToMany(mappedBy = "member", cascade = CascadeType.PERSIST, orphanRemoval = true) // mappedBy로 참조하는 외래키임을 명시
-    private final List<MemberProject> memberProjects = new ArrayList<>();
+    private List<MemberProject> memberProjects = new ArrayList<>();
 
     //Todo: 변경하기??
     @ElementCollection(fetch = FetchType.EAGER)
