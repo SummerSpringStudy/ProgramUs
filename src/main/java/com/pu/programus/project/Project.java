@@ -33,7 +33,7 @@ public class Project {
     @ManyToOne(fetch = FetchType.LAZY)
     private Member owner;
 
-    @OneToMany(mappedBy = "project", cascade = CascadeType.PERSIST)
+    @OneToMany(mappedBy = "project", cascade = CascadeType.ALL)
     @Builder.Default
     private List<ProjectKeyword> projectKeywords = new ArrayList<>(); // 리스트로 만들필요 ex) 스프링 장고 -> project처럼 만들기
 

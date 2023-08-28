@@ -119,6 +119,7 @@ public class ProjectService {
         MemberProject memberProject = new MemberProject();
         memberProject.setProject(project);
         memberProject.setMember(member);
+        // Todo: 잘못된 로직. dto를 추가하던가 해야함
         memberProject.setPosition(member.getPosition());
         project.addMemberProject(memberProject);
 
@@ -189,22 +190,6 @@ public class ProjectService {
     }
 
     public void saveProject(Project project) {
-        for (ProjectKeyword projectKeyword : project.getProjectKeywords()) {
-            log.info("ProjectKeyword save {}", projectKeyword);
-            projectKeywordRepository.save(projectKeyword);
-        }
-
-        // apply 시 에러 발생
-        for (MemberProject memberProject : project.getMemberProjects()) {
-            log.info("MemberProject save {}", memberProject);
-            memberProjectRepository.save(memberProject);
-        }
-
-        for (ProjectHeadCount projectHeadCount : project.getProjectHeadCounts()) {
-            log.info("ProjectHeadCount save {}", projectHeadCount);
-            projectHeadCountRepository.save(projectHeadCount);
-        }
-
         projectRepository.save(project);
         log.info("Project save {}", project);
     }
@@ -264,7 +249,6 @@ public class ProjectService {
         Member member = findMember(uid);
         removeMemberProject(project, member);
         removeProjectFromMember(project, member);
-        saveProject(project);
     }
 
     private Member findMember(String uid) {
