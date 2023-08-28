@@ -71,4 +71,19 @@ public class ProjectController {
         projectService.apply(projectId, positionName, uid);
     }
 
+    @PUTokenApiImplicitParams
+    @PostMapping("/cancel")
+    public void cancelApply(@RequestHeader(SecurityConfiguration.TOKEN_HEADER) String token,
+                            @RequestParam Long projectId,
+                            @RequestParam String positionName) {
+        String uid = jwtTokenProvider.getUid(token);
+        projectService.cancelApply(projectId, positionName, uid);
+    }
+
+    @GetMapping("/contain/{title}")
+    public ResponseEntity<ProjectMiniList> getProjectContainsTitle(@RequestParam String title) {
+        ProjectMiniList projectMiniList = projectService.getProjectsContainsTitle(title);
+        return ResponseEntity.ok(projectMiniList);
+    }
+
 }

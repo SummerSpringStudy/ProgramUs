@@ -36,15 +36,15 @@ public class Member implements UserDetails {
     private String intro; // 소개
     private String contents; // 본문 소개
 
-    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.PERSIST)
     @Builder.Default
     private Position position = new Position(); // 카테고리로 바꾸기
 
     @OneToMany(mappedBy = "owner", cascade = CascadeType.ALL)
     private List<Project> ownerProjects = new ArrayList<>();
 
-    @OneToMany(mappedBy = "member", cascade = CascadeType.ALL, orphanRemoval = true) // mappedBy로 참조하는 외래키임을 명시
-    private List<MemberProject> memberProjects = new ArrayList<>();
+    @OneToMany(mappedBy = "member", cascade = CascadeType.PERSIST, orphanRemoval = true) // mappedBy로 참조하는 외래키임을 명시
+    private final List<MemberProject> memberProjects = new ArrayList<>();
 
     //Todo: 변경하기??
     @ElementCollection(fetch = FetchType.EAGER)

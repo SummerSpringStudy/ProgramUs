@@ -11,6 +11,7 @@ import com.pu.programus.location.Location;
 import com.pu.programus.location.LocationRepository;
 import com.pu.programus.member.Member;
 import com.pu.programus.member.MemberRepository;
+import com.pu.programus.position.Position;
 import com.pu.programus.position.PositionRepository;
 import com.pu.programus.project.DTO.*;
 import lombok.RequiredArgsConstructor;
@@ -211,8 +212,20 @@ public class ProjectService {
     public void apply(Long projectId, String positionName, String uid) {
         Project project = findProject(projectId);
         validateDuplicateApply(uid, project.getMemberProjects());
-        updateHeadCountByPositionName(project, positionName);
-        addMemberToProject(uid, project);
+        applyUpdateHeadCount(project, positionName);
+        addMemberToProject(uid, project, positionName);
+    }
+
+    public void cancelApply(Long projectId, String positionName, String uid) {
+        Project project = findProject(projectId);
+        checkApplyStatus(uid, project.getMemberProjects());
+        cancelUpdateHeadCount(project, positionName);
+        removeMemberFromProject(uid, project);
+    }
+
+    private void checkApplyStatus(String uid, List<MemberProject> memberProjects) {
+        if (!isAlreadyApply(uid, memberProjects))
+            throw new IllegalArgumentException("지원하지 않은 프로젝트입니다.");
     }
 
     public ProjectMiniList getProjectMiniList(String title, String location, String position, Pageable pageable){
@@ -236,30 +249,65 @@ public class ProjectService {
                 .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 프로젝트 ID 입니다."));
     }
 
-    private void addMemberToProject(String uid, Project project) {
-        Member member = memberRepository.findByUid(uid)
-                .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 uid 입니다."));
-        connectMemberProject(project, member);
+    private void addMemberToProject(String uid, Project project, String positionName) {
+        Member member = findMember(uid);
+        Position position = findPosition(positionName);
+        connectMemberProject(project, member, position);
+        projectRepository.save(project);
+    }
+
+    private Position findPosition(String positionName) {
+        return positionRepository.findByName(positionName).orElseThrow(() -> new IllegalArgumentException("존재하지 않는 모집 분야입니다."));
+    }
+
+    private void removeMemberFromProject(String uid, Project project) {
+        Member member = findMember(uid);
+        removeMemberProject(project, member);
+        removeProjectFromMember(project, member);
         saveProject(project);
     }
 
-    private void connectMemberProject(Project project, Member member) {
+    private Member findMember(String uid) {
+        return memberRepository.findByUid(uid)
+                .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 uid 입니다."));
+    }
+
+    private void removeProjectFromMember(Project project, Member member) {
+        member.getMemberProjects().removeIf(p -> p.getId().equals(project.getId()));
+    }
+
+    private void connectMemberProject(Project project, Member member, Position position) {
         MemberProject memberProject = new MemberProject();
         memberProject.setProject(project);
         memberProject.setMember(member);
+        memberProject.setPosition(position);
         project.addMemberProject(memberProject);
         projectRepository.save(project);
     }
 
-    private void updateHeadCountByPositionName(Project project, String positionName) {
+    private void removeMemberProject(Project project, Member member) {
+        memberProjectRepository.deleteByMemberIdAndProjectId(member.getId(), project.getId());
+    }
+
+    private void applyUpdateHeadCount(Project project, String positionName) {
         ProjectHeadCount recruitInfo = getRecruitInfo(project.getProjectHeadCounts(), positionName);
         validateApplicant(recruitInfo);
         increaseNowHeadCount(recruitInfo);
         projectHeadCountRepository.save(recruitInfo);
     }
 
+    private void cancelUpdateHeadCount(Project project, String positionName) {
+        ProjectHeadCount recruitInfo = getRecruitInfo(project.getProjectHeadCounts(), positionName);
+        decreaseNowHeadCount(recruitInfo);
+        projectHeadCountRepository.save(recruitInfo);
+    }
+
     private void increaseNowHeadCount(ProjectHeadCount recruitInfo) {
         recruitInfo.setNowHeadCount(recruitInfo.getNowHeadCount() + 1);
+    }
+
+    private void decreaseNowHeadCount(ProjectHeadCount recruitInfo) {
+        recruitInfo.setNowHeadCount(recruitInfo.getNowHeadCount() - 1);
     }
 
     private void validateDuplicateApply(String uid, List<MemberProject> memberProjects) {
