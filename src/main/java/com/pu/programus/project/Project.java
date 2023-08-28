@@ -4,6 +4,7 @@ import com.pu.programus.bridge.MemberProject;
 import com.pu.programus.bridge.ProjectKeyword;
 import com.pu.programus.location.Location;
 import com.pu.programus.member.DTO.ProjectMemberDTO;
+import com.pu.programus.member.Member;
 import com.pu.programus.project.DTO.HeadCountResponseDTO;
 import lombok.*;
 
@@ -28,12 +29,17 @@ public class Project {
 
     private String title;
 
-    @OneToMany(mappedBy = "project")
+    //owner
+    @ManyToOne(fetch = FetchType.LAZY)
+    private Member member;
+
+    @OneToMany(mappedBy = "project", cascade = CascadeType.ALL)
     @Builder.Default
     private List<ProjectKeyword> projectKeywords = new ArrayList<>(); // 리스트로 만들필요 ex) 스프링 장고 -> project처럼 만들기
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    private Location location;
+    @ManyToOne
+    @Builder.Default
+    private Location location = new Location(Project.ALL_LOCATION);
 
     private Date startTime;
     private Date endTime;
@@ -78,5 +84,10 @@ public class Project {
         return memberProjects.stream()
                 .map(ProjectMemberDTO::make)
                 .collect(Collectors.toList());
+    }
+
+    public void clear(){
+        this.projectKeywords.clear();
+        this.projectHeadCounts.clear();
     }
 }

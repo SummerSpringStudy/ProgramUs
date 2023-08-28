@@ -6,6 +6,7 @@ import com.pu.programus.bridge.ProjectKeyword;
 import com.pu.programus.bridge.ProjectKeywordRepository;
 import com.pu.programus.keyword.Keyword;
 import com.pu.programus.keyword.KeywordRepository;
+import com.pu.programus.location.Location;
 import com.pu.programus.location.LocationRepository;
 import com.pu.programus.member.Member;
 import com.pu.programus.member.MemberRepository;
@@ -44,6 +45,8 @@ public class ProjectService {
 
         Project project = buildProjectByPrimitiveValue(projectRequestDTO);
 
+        setProjectOwner(uid, project);
+
         //Todo: 지역설정을 하지 않았을 경우
         setLocation(projectRequestDTO, project);
 
@@ -54,6 +57,12 @@ public class ProjectService {
         createProjectHeadCount(projectRequestDTO, project);
 
         saveProject(project);
+    }
+
+    private void setProjectOwner(String uid, Project project) {
+        Member member = memberRepository.findByUid(uid)
+                .orElseThrow(() -> new IllegalArgumentException("uid 가 존재하지 않습니다."));
+        project.setMember(member);
     }
 
     private void setLocation(ProjectRequestDTO projectRequestDTO, Project project) {
@@ -123,6 +132,39 @@ public class ProjectService {
                 .status(ProjectStatus.RECRUITING)
                 .build();
     }
+
+    public void update(String uid, Long projectId, ProjectRequestDTO projectRequestDTO){
+
+        Project project = projectRepository.findById(projectId)
+                .orElseThrow(() -> new NoSuchElementException("존재하지 않는 게시글입니다."));
+
+        //  owner 검증
+        String ownerUid = project.getMember().getUid();
+
+        updateProjectData(projectRequestDTO, project);
+
+        saveProject(project);
+    }
+
+    private void updateProjectData(ProjectRequestDTO projectRequestDTO, Project project) {
+
+        clear(project);
+
+        project.setTitle(projectRequestDTO.getTitle());
+        project.setDescription(projectRequestDTO.getDescription());
+        project.setStartTime(projectRequestDTO.getStartTime());
+        project.setEndTime(projectRequestDTO.getEndTime());
+        setLocation(projectRequestDTO, project);
+
+        createProjectHeadCount(projectRequestDTO, project);
+        createMemberKeyword(projectRequestDTO, project);
+    }
+
+    private void clear(Project project) {
+        projectHeadCountRepository.deleteAllByProject(project);
+        projectKeywordRepository.deleteAllByProject(project);
+    }
+
 
     public void delete(String uid, Long projectId){
         Member member = memberRepository.findByUid(uid)
