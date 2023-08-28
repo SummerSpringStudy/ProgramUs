@@ -14,6 +14,7 @@ import java.util.List;
 @Builder
 public class ProjectHeadCount {
     @Id
+
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
