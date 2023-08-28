@@ -22,9 +22,9 @@ public class ProjectController {
     private final JwtTokenProvider jwtTokenProvider;
 
     @GetMapping("/mini")
-    public ResponseEntity<ProjectMiniList> getProjectMiniList(@RequestParam(required = false) String location, @RequestParam(required = false) String position, Pageable pageable){
+    public ResponseEntity<ProjectMiniList> getProjectMiniList(@RequestParam(required = false) String title, @RequestParam(required = false) String location, @RequestParam(required = false) String position, Pageable pageable){
 
-        ProjectMiniList projectMiniList = projectService.getProjectMiniList(location, position, pageable);
+        ProjectMiniList projectMiniList = projectService.getProjectMiniList(title, location, position, pageable);
         return ResponseEntity.ok(projectMiniList);
     }
 
@@ -68,12 +68,6 @@ public class ProjectController {
                              @RequestParam String positionName) {
         String uid = jwtTokenProvider.getUid(token);
         projectService.apply(projectId, positionName, uid);
-    }
-
-    @GetMapping("/contain/{title}")
-    public ResponseEntity<ProjectMiniList> getProjectContainsTitle(@RequestParam String title) {
-        ProjectMiniList projectMiniList = projectService.getProjectsContainsTitle(title);
-        return ResponseEntity.ok(projectMiniList);
     }
 
 }

@@ -202,18 +202,9 @@ public class ProjectService {
         addMemberToProject(uid, project);
     }
 
-    // Todo: 제목 조회 api만들기
-    public ProjectMiniList getProjectsContainsTitle(String title) {
-        List<Project> projects = projectRepository.findByTitleContains(title);
-        List<ProjectMiniResponseDTO> projectMiniResponseDTOS = projects.stream()
-                .map(ProjectMiniResponseDTO::make)
-                .collect(Collectors.toList());
-        return new ProjectMiniList(projectMiniResponseDTOS);
-    }
+    public ProjectMiniList getProjectMiniList(String title, String location, String position, Pageable pageable){
 
-    public ProjectMiniList getProjectMiniList(String location, String position, Pageable pageable){
-
-        List<Project> projects = projectRepository.findAllByLocationAndPosition(location, position, pageable);
+        List<Project> projects = projectRepository.findAllByLocationAndPosition(title, location, position, pageable);
 
         List<ProjectMiniResponseDTO> projectMiniResponseDTOS = projects.stream()
                 .map(ProjectMiniResponseDTO::make)
