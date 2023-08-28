@@ -18,7 +18,6 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.Optional;
@@ -185,6 +184,7 @@ public class ProjectService {
             projectKeywordRepository.save(projectKeyword);
         }
 
+        // apply 시 에러 발생
         for (MemberProject memberProject : project.getMemberProjects()) {
             memberProjectRepository.save(memberProject);
         }
@@ -194,18 +194,13 @@ public class ProjectService {
         }
         projectRepository.save(project);
     }
-    
-    // Todo: editProject필요
 
-    // Comment: 필요없어짐
-    /*
-    public List<Project> findProjectsByRecruitingPosition(Position pos) {
-        List<ProjectHeadCount> projectHeadCounts = positionRepository.findByName(pos.getName())
-                .orElseThrow(() -> new IllegalArgumentException("Cannot find " + pos.getName()))
-                .getProjectHeadCounts();
-        return getProjectsFromProjectHeadCounts(projectHeadCounts);
+    public void apply(Long projectId, String positionName, String uid) {
+        Project project = findProject(projectId);
+        validateDuplicateApply(uid, project.getMemberProjects());
+        updateHeadCountByPositionName(project, positionName);
+        addMemberToProject(uid, project);
     }
-     */
 
     // Todo: 제목 조회 api만들기
     public ProjectMiniList getProjectsContainsTitle(String title) {
@@ -214,14 +209,6 @@ public class ProjectService {
                 .map(ProjectMiniResponseDTO::make)
                 .collect(Collectors.toList());
         return new ProjectMiniList(projectMiniResponseDTOS);
-    }
-
-    private List<Project> getProjectsFromProjectHeadCounts(List<ProjectHeadCount> projectHeadCounts) {
-        List<Project> result = new ArrayList<>();
-        for (ProjectHeadCount projectHeadCount : projectHeadCounts) {
-            result.add(projectHeadCount.getProject());
-        }
-        return result;
     }
 
     public ProjectMiniList getProjectMiniList(String location, String position, Pageable pageable){
@@ -241,15 +228,12 @@ public class ProjectService {
                 .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 프로젝트 ID 입니다.")));
     }
 
-    public void apply(Long projectId, String positionName, String uid) {
-        Project project = projectRepository.findById(projectId)
+    private Project findProject(Long projectId) {
+        return projectRepository.findById(projectId)
                 .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 프로젝트 ID 입니다."));
-        ProjectHeadCount recruitInfo = getRecruitInfo(project.getProjectHeadCounts(), positionName);
+    }
 
-        validateDuplicateApply(uid, project.getMemberProjects());
-        validateApply(recruitInfo);
-        increaseNowHeadCount(recruitInfo);
-
+    private void addMemberToProject(String uid, Project project) {
         Member member = memberRepository.findByUid(uid)
                 .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 uid 입니다."));
         connectMemberProject(project, member);
@@ -261,6 +245,14 @@ public class ProjectService {
         memberProject.setProject(project);
         memberProject.setMember(member);
         project.addMemberProject(memberProject);
+        projectRepository.save(project);
+    }
+
+    private void updateHeadCountByPositionName(Project project, String positionName) {
+        ProjectHeadCount recruitInfo = getRecruitInfo(project.getProjectHeadCounts(), positionName);
+        validateApplicant(recruitInfo);
+        increaseNowHeadCount(recruitInfo);
+        projectHeadCountRepository.save(recruitInfo);
     }
 
     private void increaseNowHeadCount(ProjectHeadCount recruitInfo) {
@@ -276,7 +268,7 @@ public class ProjectService {
         return memberProjects.stream().anyMatch(e -> e.getMember().getUid().equals(uid));
     }
 
-    private void validateApply(ProjectHeadCount recruitInfo) {
+    private void validateApplicant(ProjectHeadCount recruitInfo) {
         if (isHeadCountFull(recruitInfo))
             throw new IllegalArgumentException("지원한 모집 분야의 인원이 가득 찼습니다.");
     }
