@@ -2,6 +2,7 @@ package com.pu.programus.project;
 
 import com.pu.programus.annotation.PUTokenApiImplicitParams;
 import com.pu.programus.config.security.SecurityConfiguration;
+import com.pu.programus.exception.AuthorityException;
 import com.pu.programus.jwt.JwtTokenProvider;
 import com.pu.programus.project.DTO.ProjectMiniList;
 import com.pu.programus.project.DTO.ProjectRequestDTO;
@@ -49,14 +50,14 @@ public class ProjectController {
 
     @PUTokenApiImplicitParams
     @PutMapping("/{projectId}")
-    public void updateProject(@RequestHeader(SecurityConfiguration.TOKEN_HEADER) String token, @PathVariable Long projectId, @RequestBody ProjectRequestDTO projectRequestDTO){
+    public void updateProject(@RequestHeader(SecurityConfiguration.TOKEN_HEADER) String token, @PathVariable Long projectId, @RequestBody ProjectRequestDTO projectRequestDTO) throws AuthorityException {
         String uid = jwtTokenProvider.getUid(token);
         projectService.update(uid, projectId, projectRequestDTO);
     }
 
     @PUTokenApiImplicitParams
     @DeleteMapping()
-    public void deleteProject(@RequestHeader(SecurityConfiguration.TOKEN_HEADER) String token, @RequestParam Long projectId){
+    public void deleteProject(@RequestHeader(SecurityConfiguration.TOKEN_HEADER) String token, @RequestParam Long projectId) throws AuthorityException{
         String uid = jwtTokenProvider.getUid(token);
         projectService.delete(uid, projectId);
     }

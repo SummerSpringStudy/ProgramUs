@@ -4,9 +4,9 @@ import com.pu.programus.bridge.MemberProject;
 import com.pu.programus.bridge.MemberProjectRepository;
 import com.pu.programus.bridge.ProjectKeyword;
 import com.pu.programus.bridge.ProjectKeywordRepository;
+import com.pu.programus.exception.AuthorityException;
 import com.pu.programus.keyword.Keyword;
 import com.pu.programus.keyword.KeywordRepository;
-import com.pu.programus.location.Location;
 import com.pu.programus.location.LocationRepository;
 import com.pu.programus.member.Member;
 import com.pu.programus.member.MemberRepository;
@@ -15,10 +15,10 @@ import com.pu.programus.project.DTO.*;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Pageable;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.Optional;
@@ -62,7 +62,7 @@ public class ProjectService {
     private void setProjectOwner(String uid, Project project) {
         Member member = memberRepository.findByUid(uid)
                 .orElseThrow(() -> new IllegalArgumentException("uid 가 존재하지 않습니다."));
-        project.setMember(member);
+        project.setOwner(member);
     }
 
     private void setLocation(ProjectRequestDTO projectRequestDTO, Project project) {
@@ -133,17 +133,27 @@ public class ProjectService {
                 .build();
     }
 
-    public void update(String uid, Long projectId, ProjectRequestDTO projectRequestDTO){
+    public void update(String uid, Long projectId, ProjectRequestDTO projectRequestDTO) throws AuthorityException{
 
         Project project = projectRepository.findById(projectId)
                 .orElseThrow(() -> new NoSuchElementException("존재하지 않는 게시글입니다."));
 
-        //  owner 검증
-        String ownerUid = project.getMember().getUid();
+        checkOwner(project, uid);
 
         updateProjectData(projectRequestDTO, project);
 
-        saveProject(project);
+        log.info("complete update");
+
+//        saveProject(project);
+    }
+
+    private void checkOwner(Project project, String checkUid) throws AuthorityException {
+
+        String ownerUid = project.getOwner().getUid();
+
+        if(!ownerUid.equals(checkUid)){
+             throw new AuthorityException(HttpStatus.FORBIDDEN, "권한이 없습니다.");
+         }
     }
 
     private void updateProjectData(ProjectRequestDTO projectRequestDTO, Project project) {
@@ -156,56 +166,57 @@ public class ProjectService {
         project.setEndTime(projectRequestDTO.getEndTime());
         setLocation(projectRequestDTO, project);
 
-        createProjectHeadCount(projectRequestDTO, project);
         createMemberKeyword(projectRequestDTO, project);
+        createProjectHeadCount(projectRequestDTO, project);
     }
 
     private void clear(Project project) {
         projectHeadCountRepository.deleteAllByProject(project);
         projectKeywordRepository.deleteAllByProject(project);
+        project.clear();
     }
 
 
-    public void delete(String uid, Long projectId){
-        Member member = memberRepository.findByUid(uid)
-                .orElseThrow(() -> new NoSuchElementException("존재하지 않는 회원입니다."));
-
-        // Todo: 멤버가 삭제 권한이 있는지 (그룹장인지) 확인 필요
-
+    public void delete(String uid, Long projectId) throws AuthorityException{
         Project project = projectRepository.findById(projectId)
                 .orElseThrow(() -> new NoSuchElementException("존재하지 않는 게시글입니다."));
 
-        log.info("[delete] project: {}", project);
+        checkOwner(project, uid);
 
         projectRepository.delete(project);
     }
 
     public void saveProject(Project project) {
         for (ProjectKeyword projectKeyword : project.getProjectKeywords()) {
+            log.info("ProjectKeyword save {}", projectKeyword);
             projectKeywordRepository.save(projectKeyword);
         }
 
+        // apply 시 에러 발생
         for (MemberProject memberProject : project.getMemberProjects()) {
+            log.info("MemberProject save {}", memberProject);
             memberProjectRepository.save(memberProject);
         }
 
         for (ProjectHeadCount projectHeadCount : project.getProjectHeadCounts()) {
+            log.info("ProjectHeadCount save {}", projectHeadCount);
             projectHeadCountRepository.save(projectHeadCount);
         }
-        projectRepository.save(project);
-    }
-    
-    // Todo: editProject필요
 
-    // Comment: 필요없어짐
-    /*
-    public List<Project> findProjectsByRecruitingPosition(Position pos) {
-        List<ProjectHeadCount> projectHeadCounts = positionRepository.findByName(pos.getName())
-                .orElseThrow(() -> new IllegalArgumentException("Cannot find " + pos.getName()))
-                .getProjectHeadCounts();
-        return getProjectsFromProjectHeadCounts(projectHeadCounts);
+        projectRepository.save(project);
+        log.info("Project save {}", project);
     }
-     */
+
+    public void apply(Long projectId, String positionName, String uid) {
+        Project project = findProject(projectId);
+        validateDuplicateApply(uid, project.getMemberProjects());
+        updateHeadCountByPositionName(project, positionName);
+        addMemberToProject(uid, project);
+    }
+
+    public void confirm() {
+
+    }
 
     // Todo: 제목 조회 api만들기
     public ProjectMiniList getProjectsContainsTitle(String title) {
@@ -214,14 +225,6 @@ public class ProjectService {
                 .map(ProjectMiniResponseDTO::make)
                 .collect(Collectors.toList());
         return new ProjectMiniList(projectMiniResponseDTOS);
-    }
-
-    private List<Project> getProjectsFromProjectHeadCounts(List<ProjectHeadCount> projectHeadCounts) {
-        List<Project> result = new ArrayList<>();
-        for (ProjectHeadCount projectHeadCount : projectHeadCounts) {
-            result.add(projectHeadCount.getProject());
-        }
-        return result;
     }
 
     public ProjectMiniList getProjectMiniList(String location, String position, Pageable pageable){
@@ -241,24 +244,31 @@ public class ProjectService {
                 .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 프로젝트 ID 입니다.")));
     }
 
-    public void apply(Long projectId, String positionName, String uid) {
-        Project project = projectRepository.findById(projectId)
+    private Project findProject(Long projectId) {
+        return projectRepository.findById(projectId)
                 .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 프로젝트 ID 입니다."));
-        ProjectHeadCount recruitInfo = getRecruitInfo(project.getProjectHeadCounts(), positionName);
+    }
 
-        validateDuplicateApply(uid, project.getMemberProjects());
-        validateApply(recruitInfo);
-
-        increaseNowHeadCount(recruitInfo);
-
+    private void addMemberToProject(String uid, Project project) {
         Member member = memberRepository.findByUid(uid)
                 .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 uid 입니다."));
+        connectMemberProject(project, member);
+        saveProject(project);
+    }
+
+    private void connectMemberProject(Project project, Member member) {
         MemberProject memberProject = new MemberProject();
         memberProject.setProject(project);
         memberProject.setMember(member);
         project.addMemberProject(memberProject);
+        projectRepository.save(project);
+    }
 
-        saveProject(project);
+    private void updateHeadCountByPositionName(Project project, String positionName) {
+        ProjectHeadCount recruitInfo = getRecruitInfo(project.getProjectHeadCounts(), positionName);
+        validateApplicant(recruitInfo);
+        increaseNowHeadCount(recruitInfo);
+        projectHeadCountRepository.save(recruitInfo);
     }
 
     private void increaseNowHeadCount(ProjectHeadCount recruitInfo) {
@@ -274,12 +284,12 @@ public class ProjectService {
         return memberProjects.stream().anyMatch(e -> e.getMember().getUid().equals(uid));
     }
 
-    private void validateApply(ProjectHeadCount recruitInfo) {
+    private void validateApplicant(ProjectHeadCount recruitInfo) {
         if (isHeadCountFull(recruitInfo))
             throw new IllegalArgumentException("지원한 모집 분야의 인원이 가득 찼습니다.");
     }
 
-    private static boolean isHeadCountFull(ProjectHeadCount recruitInfo) {
+    private boolean isHeadCountFull(ProjectHeadCount recruitInfo) {
         return recruitInfo.getMaxHeadCount() == recruitInfo.getNowHeadCount();
     }
 
