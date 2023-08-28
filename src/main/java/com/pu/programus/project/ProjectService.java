@@ -214,6 +214,10 @@ public class ProjectService {
         addMemberToProject(uid, project);
     }
 
+    public void confirm() {
+
+    }
+
     // Todo: 제목 조회 api만들기
     public ProjectMiniList getProjectsContainsTitle(String title) {
         List<Project> projects = projectRepository.findByTitleContains(title);
