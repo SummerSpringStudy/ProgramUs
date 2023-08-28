@@ -18,11 +18,9 @@ public class ProjectHeadCount {
     private Long id;
 
     @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.PERSIST)
-    @JoinColumn(name="PROJECT_ID")
     private Project project;
 
     @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.PERSIST)
-    @JoinColumn(name="POSITION_ID")
     private Position position;
 
     private int nowHeadCount;

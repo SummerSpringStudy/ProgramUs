@@ -7,6 +7,7 @@ import com.pu.programus.bridge.ProjectKeywordRepository;
 import com.pu.programus.exception.AuthorityException;
 import com.pu.programus.keyword.Keyword;
 import com.pu.programus.keyword.KeywordRepository;
+import com.pu.programus.location.Location;
 import com.pu.programus.location.LocationRepository;
 import com.pu.programus.member.Member;
 import com.pu.programus.member.MemberRepository;
@@ -47,7 +48,6 @@ public class ProjectService {
 
         setProjectOwner(uid, project);
 
-        //Todo: 지역설정을 하지 않았을 경우
         setLocation(projectRequestDTO, project);
 
         createMemberProject(project, uid);
@@ -70,7 +70,8 @@ public class ProjectService {
         if (location == null)
             location = Project.ALL_LOCATION;
 
-        project.setLocation(locationRepository.findByName(location)
+        Optional<Location> optionalLocation = locationRepository.findByName(location);
+        project.setLocation( optionalLocation
                 .orElseThrow(() -> new IllegalArgumentException("없는 지역입니다.")));
     }
 
@@ -151,14 +152,13 @@ public class ProjectService {
 
         String ownerUid = project.getOwner().getUid();
 
-        if(!ownerUid.equals(checkUid)){
+        if(!ownerUid.equals(checkUid))
              throw new AuthorityException(HttpStatus.FORBIDDEN, "권한이 없습니다.");
-         }
     }
 
     private void updateProjectData(ProjectRequestDTO projectRequestDTO, Project project) {
 
-        clear(project);
+        clearProject(project);
 
         project.setTitle(projectRequestDTO.getTitle());
         project.setDescription(projectRequestDTO.getDescription());
@@ -167,10 +167,11 @@ public class ProjectService {
         setLocation(projectRequestDTO, project);
 
         createMemberKeyword(projectRequestDTO, project);
+        //Todo: 이미 인원있는 인원이 넘었는지 체크
         createProjectHeadCount(projectRequestDTO, project);
     }
 
-    private void clear(Project project) {
+    private void clearProject(Project project) {
         projectHeadCountRepository.deleteAllByProject(project);
         projectKeywordRepository.deleteAllByProject(project);
         project.clear();
@@ -222,8 +223,7 @@ public class ProjectService {
                 .map(ProjectMiniResponseDTO::make)
                 .collect(Collectors.toList());
 
-        ProjectMiniList projectMiniList = new ProjectMiniList(projectMiniResponseDTOS);
-        return projectMiniList;
+        return new ProjectMiniList(projectMiniResponseDTOS);
     }
 
     public ProjectResponseDTO getProjectById(Long projectId) {
