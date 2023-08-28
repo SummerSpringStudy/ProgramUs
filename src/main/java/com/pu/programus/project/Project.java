@@ -20,7 +20,7 @@ import java.util.stream.Collectors;
 @Builder
 public class Project {
 
-    public static final String ALL_LOCATION = "ALL_LOCATION";
+    public static final String ALL_LOCATION = "전체";
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -33,8 +33,7 @@ public class Project {
     private List<ProjectKeyword> projectKeywords = new ArrayList<>(); // 리스트로 만들필요 ex) 스프링 장고 -> project처럼 만들기
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @Builder.Default
-    private Location location = new Location(Project.ALL_LOCATION);
+    private Location location;
 
     private Date startTime;
     private Date endTime;
