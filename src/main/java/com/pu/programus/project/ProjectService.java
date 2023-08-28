@@ -6,7 +6,6 @@ import com.pu.programus.bridge.ProjectKeyword;
 import com.pu.programus.bridge.ProjectKeywordRepository;
 import com.pu.programus.keyword.Keyword;
 import com.pu.programus.keyword.KeywordRepository;
-import com.pu.programus.location.Location;
 import com.pu.programus.location.LocationRepository;
 import com.pu.programus.member.Member;
 import com.pu.programus.member.MemberRepository;
@@ -198,8 +197,20 @@ public class ProjectService {
     public void apply(Long projectId, String positionName, String uid) {
         Project project = findProject(projectId);
         validateDuplicateApply(uid, project.getMemberProjects());
-        updateHeadCountByPositionName(project, positionName);
+        applyUpdateHeadCount(project, positionName);
         addMemberToProject(uid, project);
+    }
+
+    public void cancelApply(Long projectId, String positionName, String uid) {
+        Project project = findProject(projectId);
+        checkApplyStatus(uid, project.getMemberProjects());
+        cancelUpdateHeadCount(project, positionName);
+        removeMemberFromProject(uid, project);
+    }
+
+    private void checkApplyStatus(String uid, List<MemberProject> memberProjects) {
+        if (!isAlreadyApply(uid, memberProjects))
+            throw new IllegalArgumentException("지원하지 않은 프로젝트입니다.");
     }
 
     // Todo: 제목 조회 api만들기
@@ -234,10 +245,25 @@ public class ProjectService {
     }
 
     private void addMemberToProject(String uid, Project project) {
-        Member member = memberRepository.findByUid(uid)
-                .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 uid 입니다."));
+        Member member = findMember(uid);
         connectMemberProject(project, member);
         saveProject(project);
+    }
+
+    private void removeMemberFromProject(String uid, Project project) {
+        Member member = findMember(uid);
+        removeMemberProject(project, member);
+        removeProjectFromMember(project, member);
+        saveProject(project);
+    }
+
+    private Member findMember(String uid) {
+        return memberRepository.findByUid(uid)
+                .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 uid 입니다."));
+    }
+
+    private void removeProjectFromMember(Project project, Member member) {
+        member.getMemberProjects().removeIf(p -> p.getId().equals(project.getId()));
     }
 
     private void connectMemberProject(Project project, Member member) {
@@ -248,15 +274,29 @@ public class ProjectService {
         projectRepository.save(project);
     }
 
-    private void updateHeadCountByPositionName(Project project, String positionName) {
+    private void removeMemberProject(Project project, Member member) {
+        memberProjectRepository.deleteByMemberIdAndProjectId(member.getId(), project.getId());
+    }
+
+    private void applyUpdateHeadCount(Project project, String positionName) {
         ProjectHeadCount recruitInfo = getRecruitInfo(project.getProjectHeadCounts(), positionName);
         validateApplicant(recruitInfo);
         increaseNowHeadCount(recruitInfo);
         projectHeadCountRepository.save(recruitInfo);
     }
 
+    private void cancelUpdateHeadCount(Project project, String positionName) {
+        ProjectHeadCount recruitInfo = getRecruitInfo(project.getProjectHeadCounts(), positionName);
+        decreaseNowHeadCount(recruitInfo);
+        projectHeadCountRepository.save(recruitInfo);
+    }
+
     private void increaseNowHeadCount(ProjectHeadCount recruitInfo) {
         recruitInfo.setNowHeadCount(recruitInfo.getNowHeadCount() + 1);
+    }
+
+    private void decreaseNowHeadCount(ProjectHeadCount recruitInfo) {
+        recruitInfo.setNowHeadCount(recruitInfo.getNowHeadCount() - 1);
     }
 
     private void validateDuplicateApply(String uid, List<MemberProject> memberProjects) {
