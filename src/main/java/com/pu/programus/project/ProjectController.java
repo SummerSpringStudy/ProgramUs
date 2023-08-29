@@ -7,6 +7,8 @@ import com.pu.programus.jwt.JwtTokenProvider;
 import com.pu.programus.project.DTO.ProjectMiniList;
 import com.pu.programus.project.DTO.ProjectRequestDTO;
 import com.pu.programus.project.DTO.ProjectResponseDTO;
+import com.pu.programus.projectApply.DTO.ProjectApplyDTO;
+import com.pu.programus.projectApply.ProjectApplyService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Pageable;
@@ -20,6 +22,7 @@ import org.springframework.web.bind.annotation.*;
 public class ProjectController {
 
     private final ProjectService projectService;
+    private final ProjectApplyService projectApplyService;
     private final JwtTokenProvider jwtTokenProvider;
 
     @GetMapping("/mini")
@@ -66,10 +69,11 @@ public class ProjectController {
     @PUTokenApiImplicitParams
     @PostMapping("/apply")
     public void applyProject(@RequestHeader(SecurityConfiguration.TOKEN_HEADER) String token,
-                             @RequestParam Long projectId,
-                             @RequestParam String positionName) {
-        String uid = jwtTokenProvider.getUid(token);
-        projectService.apply(projectId, positionName, uid);
+                             @RequestParam Long projectId,    //확인 후 삭제
+                             @RequestParam String positionName,   //확인 후 삭제
+                             @RequestBody ProjectApplyDTO projectApplyDTO) {
+        String uid = jwtTokenProvider.getUid(token);   //확인 후 삭제
+        projectApplyService.apply(projectApplyDTO);
     }
 
     //Todo: 네이밍

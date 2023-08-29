@@ -72,6 +72,11 @@ public class Project {
         memberProject.setProject(this);
     }
 
+    public void addProjectApply(ProjectApply projectApply) {
+        ProjectApplicants.add(projectApply);
+        projectApply.setProject(this);
+    }
+
     public void addProjectKeyword(ProjectKeyword projectKeyword) {
         projectKeywords.add(projectKeyword);
         projectKeyword.setProject(this);
