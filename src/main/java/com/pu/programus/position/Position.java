@@ -11,10 +11,10 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
+@Getter @Setter
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
-@Data
 @Builder
 public class Position {
     @Id
@@ -24,13 +24,13 @@ public class Position {
     @Builder.Default
     private String name = "";
 
-    @OneToMany(mappedBy = "position")
+    @OneToMany(mappedBy = "position", cascade = CascadeType.PERSIST)
     private final List<Member> members = new ArrayList<>();
 
-    @OneToMany(mappedBy = "position")
+    @OneToMany(mappedBy = "position", cascade = CascadeType.PERSIST)
     private final List<ProjectHeadCount> projectHeadCounts = new ArrayList<>();
 
-    @OneToMany(mappedBy = "position")
+    @OneToMany(mappedBy = "position", cascade = CascadeType.PERSIST)
     private final List<MemberProject> memberProjects = new ArrayList<>();
 
     public Position(String name) {

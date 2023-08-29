@@ -1,9 +1,7 @@
 package com.pu.programus.keyword;
 
 import com.pu.programus.bridge.ProjectKeyword;
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import javax.persistence.*;
 import java.util.ArrayList;
@@ -11,7 +9,7 @@ import java.util.List;
 
 @NoArgsConstructor
 @AllArgsConstructor
-@Data
+@Getter @Setter
 @Entity
 public class Keyword {
 
@@ -20,6 +18,6 @@ public class Keyword {
     private Long id;
     private String value;
 
-    @OneToMany(mappedBy = "keyword")
+    @OneToMany(mappedBy = "keyword", cascade = CascadeType.ALL)
     private List<ProjectKeyword> projectKeywords = new ArrayList<>();
 }

@@ -3,6 +3,7 @@ package com.pu.programus.member;
 import com.pu.programus.annotation.PUTokenApiImplicitParams;
 import com.pu.programus.config.security.SecurityConfiguration;
 import com.pu.programus.jwt.JwtTokenProvider;
+import com.pu.programus.member.DTO.EditMemberDto;
 import com.pu.programus.member.DTO.MemberDTO;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -36,8 +37,7 @@ public class MemberController {
 
     @PUTokenApiImplicitParams
     @PostMapping("/edit")
-    public void editMember(@RequestHeader(SecurityConfiguration.TOKEN_HEADER) String token, com.pu.programus.member.DTO.EditMemberDto
-            editMemberDto) {
+    public void editMember(@RequestHeader(SecurityConfiguration.TOKEN_HEADER) String token, @RequestBody EditMemberDto editMemberDto) {
         String uid = jwtTokenProvider.getUid(token);
 
         memberService.editMember(uid, editMemberDto);

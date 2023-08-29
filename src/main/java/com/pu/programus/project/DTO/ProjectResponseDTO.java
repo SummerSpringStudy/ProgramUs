@@ -1,6 +1,5 @@
 package com.pu.programus.project.DTO;
 
-import com.pu.programus.member.DTO.ProjectMemberDTO;
 import com.pu.programus.project.Project;
 import lombok.AllArgsConstructor;
 import lombok.Builder;

@@ -18,12 +18,10 @@ public class ProjectHeadCount {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.PERSIST)
-    @JoinColumn(name="PROJECT_ID")
+    @ManyToOne(fetch = FetchType.LAZY)
     private Project project;
 
-    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.PERSIST)
-    @JoinColumn(name="POSITION_ID")
+    @ManyToOne(fetch = FetchType.LAZY)
     private Position position;
 
     private int nowHeadCount;

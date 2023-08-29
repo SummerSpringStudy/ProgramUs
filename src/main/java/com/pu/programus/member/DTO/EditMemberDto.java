@@ -16,17 +16,5 @@ public class EditMemberDto {
     private String intro;
     private String contents;
 
-    //Todo: 처리하기
     private String position;
-
-    //Todo: 논의 사항
-    public void editPrimitiveType(Member member) {
-        //Todo: 비밀번호도 일괄 수정??
-        member.setPassword(password);
-        member.setUserName(userName);
-        member.setDepartment(department);
-        member.setEmail(email);
-        member.setIntro(intro);
-        member.setContents(contents);
-    }
 }

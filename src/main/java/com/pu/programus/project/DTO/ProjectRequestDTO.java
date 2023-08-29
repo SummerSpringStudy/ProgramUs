@@ -2,7 +2,6 @@ package com.pu.programus.project.DTO;
 
 
 
-import com.pu.programus.member.DTO.ProjectMemberDTO;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;

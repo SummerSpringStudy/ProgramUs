@@ -1,18 +1,15 @@
 package com.pu.programus.location;
 
 import com.pu.programus.project.Project;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import javax.persistence.*;
 import java.util.ArrayList;
 import java.util.List;
 
+@Getter @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-@Data
 @Entity
 @Builder
 public class Location {
@@ -27,7 +24,7 @@ public class Location {
         this.name = name;
     }
 
-    @OneToMany(mappedBy = "location", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "location", cascade = CascadeType.PERSIST)
     private final List<Project> projects = new ArrayList<>();
 
     public void add(Project project) {

@@ -25,12 +25,13 @@ public class PositionService {
     }
 
     public void addPosition(String positionName) {
+        validateDuplicate(positionName);
+
         Position position = Position.builder()
                 .name(positionName)
                 .build();
-        validateDuplicate(positionName);
-        Position savedPosition = positionRepository.save(position);
-            }
+        positionRepository.save(position);
+    }
 
     private void validateDuplicate(String positionName) {
         if (positionRepository.findByName(positionName).isPresent())

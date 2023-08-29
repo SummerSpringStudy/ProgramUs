@@ -1,4 +1,4 @@
-package com.pu.programus.member.DTO;
+package com.pu.programus.project.DTO;
 
 import com.pu.programus.bridge.MemberProject;
 import lombok.AllArgsConstructor;
