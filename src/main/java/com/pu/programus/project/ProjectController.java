@@ -7,6 +7,8 @@ import com.pu.programus.jwt.JwtTokenProvider;
 import com.pu.programus.project.DTO.ProjectMiniList;
 import com.pu.programus.project.DTO.ProjectRequestDTO;
 import com.pu.programus.project.DTO.ProjectResponseDTO;
+import com.pu.programus.projectApply.DTO.ProjectApplyDTO;
+import com.pu.programus.projectApply.ProjectApplyService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Pageable;
@@ -21,6 +23,7 @@ public class ProjectController {
 
     private final ProjectService projectService;
     private final JwtTokenProvider jwtTokenProvider;
+    private final ProjectApplyService projectApplyService;
 
     @GetMapping("/mini")
     public ResponseEntity<ProjectMiniList> getProjectMiniList(@RequestParam(required = false) String title, @RequestParam(required = false) String location, @RequestParam(required = false) String position, Pageable pageable){
@@ -67,9 +70,10 @@ public class ProjectController {
     @PostMapping("/apply")
     public void applyProject(@RequestHeader(SecurityConfiguration.TOKEN_HEADER) String token,
                              @RequestParam Long projectId,
-                             @RequestParam String positionName) {
+                             @RequestParam String positionName,
+                             @RequestBody ProjectApplyDTO projectApplyDTO) {
         String uid = jwtTokenProvider.getUid(token);
-        projectService.apply(projectId, positionName, uid);
+        projectApplyService.apply(projectApplyDTO,uid);
     }
 
     //Todo: 네이밍

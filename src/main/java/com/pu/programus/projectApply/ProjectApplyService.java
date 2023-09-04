@@ -20,7 +20,7 @@ public class ProjectApplyService {
     private final ProjectRepository projectRepository;
 
 
-    public void apply(ProjectApplyDTO projectApplyDTO) {
+    public void apply(ProjectApplyDTO projectApplyDTO, String uid ) {
         Project project = findProject(projectApplyDTO.getProjectId());
         ProjectHeadCount recruitInfo = getRecruitInfo(project.getProjectHeadCounts(), projectApplyDTO.getPositionDTO().getName());
         validateApplicant(recruitInfo);    //지원하려는 포지션에 자리가 남았는지

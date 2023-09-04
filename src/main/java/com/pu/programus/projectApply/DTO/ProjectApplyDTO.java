@@ -14,7 +14,6 @@ import org.springframework.lang.Nullable;
 @AllArgsConstructor
 @NoArgsConstructor
 public class ProjectApplyDTO {
-    @Nullable
     private String uid;    //지원자
     private String intro;  //한줄소개
     private Long projectId; //프로젝트
