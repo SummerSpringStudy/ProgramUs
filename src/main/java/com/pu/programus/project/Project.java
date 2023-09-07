@@ -1,5 +1,6 @@
 package com.pu.programus.project;
 
+import com.pu.programus.comment.Comment;
 import com.pu.programus.bridge.MemberProject;
 import com.pu.programus.bridge.ProjectKeyword;
 import com.pu.programus.location.Location;
@@ -54,6 +55,10 @@ public class Project {
     @OneToMany(mappedBy = "project", cascade = CascadeType.ALL)
     @Builder.Default
     private final List<MemberProject> memberProjects = new ArrayList<>();
+
+    @OneToMany(mappedBy = "comment", cascade = CascadeType.ALL)
+    @Builder.Default
+    private List<Comment> comments = new ArrayList<>();
 
     public void addProjectHeadCount(ProjectHeadCount projectHeadCount) {
         projectHeadCounts.add(projectHeadCount);
