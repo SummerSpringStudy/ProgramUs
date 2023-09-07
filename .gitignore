@@ -37,4 +37,7 @@ out/
 .vscode/
 
 ## custom
+# 환경설정
 **/application.properties
+# key 파일 등
+**/resources/private/
