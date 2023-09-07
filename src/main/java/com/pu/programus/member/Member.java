@@ -53,7 +53,7 @@ public class Member implements UserDetails {
     private List<String> roles = new ArrayList<>();
 
     @Nullable
-    @OneToOne(mappedBy = "member", cascade = CascadeType.ALL)
+    @OneToOne(mappedBy = "member", cascade = CascadeType.ALL, orphanRemoval = true) // 갈아끼울수 있는 객체이므로 orphanremoval 적용
     private FcmToken fcmToken;
 
     @Override
