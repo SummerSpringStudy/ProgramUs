@@ -1,5 +1,6 @@
 package com.pu.programus.member;
 
+import com.google.cloud.storage.BlobInfo;
 import com.pu.programus.bridge.MemberProject;
 import com.pu.programus.member.DTO.MemberDTO;
 import com.pu.programus.member.DTO.EditMemberDto;
