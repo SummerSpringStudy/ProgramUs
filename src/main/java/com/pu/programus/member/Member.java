@@ -1,6 +1,7 @@
 package com.pu.programus.member;
 
 import com.pu.programus.bridge.MemberProject;
+import com.pu.programus.fcm.FcmToken;
 import com.pu.programus.position.Position;
 import com.pu.programus.project.Project;
 import lombok.*;
@@ -8,6 +9,7 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
+import javax.annotation.Nullable;
 import javax.persistence.*;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -30,7 +32,7 @@ public class Member implements UserDetails {
     @Column(nullable = false)
     private String password; // 패스워드
     @Column(nullable = false)
-    private String userName; // 닉네임
+    private String nickname; // 닉네임
     private String department; // 소속
     private String email; // 이메일
     private String intro; // 소개
@@ -49,6 +51,10 @@ public class Member implements UserDetails {
     @ElementCollection(fetch = FetchType.EAGER)
     @Builder.Default
     private List<String> roles = new ArrayList<>();
+
+    @Nullable
+    @OneToOne(mappedBy = "member", cascade = CascadeType.ALL)
+    private FcmToken fcmToken;
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {

@@ -45,7 +45,7 @@ public class SignService {
         LOGGER.info("[signUp] userRepository 저장");
         Member savedMember = memberRepository.save(member);
 
-        if(savedMember.getUsername().isEmpty())
+        if(savedMember == null)
             throw new SignException(HttpStatus.BAD_REQUEST, "DB 저장에 실패했습니다.");
     }
 
@@ -101,7 +101,7 @@ public class SignService {
     private Member createMember(SignUpDto signUpDto) {
         Member member = Member.builder()
                         .uid(signUpDto.getId())
-                        .userName(signUpDto.getName())
+                        .nickname(signUpDto.getName())
                         .password(passwordEncoder.encode(signUpDto.getPassword()))
                         .roles(Collections.singletonList("ROLE_USER"))
                         .build();
