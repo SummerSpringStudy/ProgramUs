@@ -1,4 +1,4 @@
-package com.pu.programus.fcm;
+package com.pu.programus.notification.fcm;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 

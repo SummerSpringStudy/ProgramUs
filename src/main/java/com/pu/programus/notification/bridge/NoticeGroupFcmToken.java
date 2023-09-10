@@ -1,7 +1,7 @@
-package com.pu.programus.bridge;
+package com.pu.programus.notification.bridge;
 
-import com.pu.programus.fcm.FcmToken;
-import com.pu.programus.noticegroup.NoticeGroup;
+import com.pu.programus.notification.fcm.FcmToken;
+import com.pu.programus.notification.noticegroup.NoticeGroup;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -24,4 +24,9 @@ public class NoticeGroupFcmToken {
 
     @ManyToOne(fetch = FetchType.LAZY)
     private FcmToken fcmToken;
+
+    public NoticeGroupFcmToken(NoticeGroup noticeGroup, FcmToken fcmToken) {
+        this.noticeGroup = noticeGroup;
+        this.fcmToken = fcmToken;
+    }
 }

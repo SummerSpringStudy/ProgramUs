@@ -1,7 +1,6 @@
-package com.pu.programus.noticegroup;
+package com.pu.programus.notification.noticegroup;
 
-import com.pu.programus.bridge.NoticeGroupFcmToken;
-import com.pu.programus.fcm.FcmToken;
+import com.pu.programus.notification.bridge.NoticeGroupFcmToken;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;

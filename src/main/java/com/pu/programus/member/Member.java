@@ -1,7 +1,7 @@
 package com.pu.programus.member;
 
 import com.pu.programus.bridge.MemberProject;
-import com.pu.programus.fcm.FcmToken;
+import com.pu.programus.notification.fcm.FcmToken;
 import com.pu.programus.position.Position;
 import com.pu.programus.project.Project;
 import lombok.*;

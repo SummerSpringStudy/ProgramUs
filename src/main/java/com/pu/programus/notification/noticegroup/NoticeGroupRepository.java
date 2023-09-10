@@ -1,4 +1,4 @@
-package com.pu.programus.noticegroup;
+package com.pu.programus.notification.noticegroup;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 

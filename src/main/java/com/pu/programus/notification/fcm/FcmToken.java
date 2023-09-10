@@ -1,6 +1,6 @@
-package com.pu.programus.fcm;
+package com.pu.programus.notification.fcm;
 
-import com.pu.programus.bridge.NoticeGroupFcmToken;
+import com.pu.programus.notification.bridge.NoticeGroupFcmToken;
 import com.pu.programus.member.Member;
 import lombok.*;
 import org.checkerframework.common.aliasing.qual.Unique;
