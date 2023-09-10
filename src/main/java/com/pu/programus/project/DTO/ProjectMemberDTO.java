@@ -15,7 +15,7 @@ public class ProjectMemberDTO {
     // 프로젝트 생성 과정에서 오너가 본인의 포지션을 선택하는 과정 필요?
     public static ProjectMemberDTO make(MemberProject memberProject){
         return ProjectMemberDTO.builder()
-                .userName(memberProject.getMember().getUsername())
+                .userName(memberProject.getMember().getNickname())
                 .position(memberProject.getPosition().getName())
                 .build();
     }

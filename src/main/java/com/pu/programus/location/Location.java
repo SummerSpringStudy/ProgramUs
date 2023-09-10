@@ -4,6 +4,7 @@ import com.pu.programus.project.Project;
 import lombok.*;
 
 import javax.persistence.*;
+import javax.validation.constraints.NotNull;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -18,14 +19,15 @@ public class Location {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @NotNull
     private String name;
+
+    @OneToMany(mappedBy = "location", cascade = CascadeType.PERSIST)
+    private final List<Project> projects = new ArrayList<>();
 
     public Location(String name) {
         this.name = name;
     }
-
-    @OneToMany(mappedBy = "location", cascade = CascadeType.PERSIST)
-    private final List<Project> projects = new ArrayList<>();
 
     public void add(Project project) {
         project.setLocation(this);
