@@ -7,17 +7,15 @@ import com.pu.programus.member.MemberService;
 import lombok.AllArgsConstructor;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestHeader;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
 
 @Slf4j
-@Controller
+@RestController
 @RequiredArgsConstructor
 @RequestMapping("/upload")
 public class UploadController {
@@ -27,7 +25,7 @@ public class UploadController {
 
     @PUTokenApiImplicitParams
     @PostMapping("/profile")
-    public void uploadProfile(
+    public ResponseEntity<String> uploadProfile(
             @RequestHeader(SecurityConfiguration.TOKEN_HEADER) String token,
             @RequestParam MultipartFile image
             ) throws IOException {
@@ -36,7 +34,8 @@ public class UploadController {
         String uid = jwtTokenProvider.getUid(token);
         log.info("[uploadProfile] uid: {}", uid);
 
-        memberService.uploadProfile(uid, image.getBytes());
+        String profilePath = memberService.uploadProfile(uid, image.getBytes());
         log.info("[uploadProfile] 프로필 이미지 업로드 성공");
+        return ResponseEntity.ok("uploaded profile path : " + profilePath);
     }
 }

@@ -111,22 +111,21 @@ public class MemberService {
         member.setPosition(position);
     }
 
-    public void uploadProfile(String uid, byte[] image) {
+    public String uploadProfile(String uid, byte[] image) {
         Member member = findMember(uid);
 
         log.info("[uploadProfile] firebaseBucket " + firebaseBucket);
         log.info("[uploadProfile] StorageClient " + StorageClient.getInstance());
 
         // 여기서 에러 발생
-        Bucket bucket = StorageClient.getInstance().bucket(firebaseBucket + "test/");
-        log.info("[uploadProfile] bucket" + bucket);
+        Bucket bucket = StorageClient.getInstance().bucket();
+        log.info("[uploadProfile] bucket " + bucket);
 
-        String url = "/users/" + member.getUid() + "/profile";
+        String url = firebaseBucket + "/users/" + member.getUid() + "/profile";
         Blob blob = bucket.create(url, image);
         log.info("[uploadProfile] blob create complete");
 
-
-//        memberRepository.save(member);
+        return url;
     }
 
     private Member findMember(String uid) {

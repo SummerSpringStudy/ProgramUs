@@ -32,7 +32,7 @@ public class FirebaseConfig {
 
             FirebaseOptions options = new FirebaseOptions.Builder()
                     .setCredentials(GoogleCredentials.fromStream(serviceAccount))
-                    .setStorageBucket("programus-117f2.appspot.com/")
+                    .setStorageBucket("programus-117f2.appspot.com")
                     .build();
 
             FirebaseApp.initializeApp(options);
