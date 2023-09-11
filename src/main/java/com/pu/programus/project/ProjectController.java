@@ -7,6 +7,8 @@ import com.pu.programus.jwt.JwtTokenProvider;
 import com.pu.programus.project.DTO.ProjectMiniList;
 import com.pu.programus.project.DTO.ProjectRequestDTO;
 import com.pu.programus.project.DTO.ProjectResponseDTO;
+import com.pu.programus.projectApply.DTO.ProjectApplyDTO;
+import com.pu.programus.projectApply.ProjectApplyService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Pageable;
@@ -60,26 +62,6 @@ public class ProjectController {
     public void deleteProject(@RequestHeader(SecurityConfiguration.TOKEN_HEADER) String token, @RequestParam Long projectId) throws AuthorityException{
         String uid = jwtTokenProvider.getUid(token);
         projectService.delete(uid, projectId);
-    }
-
-    //Todo: 네이밍
-    @PUTokenApiImplicitParams
-    @PostMapping("/apply")
-    public void applyProject(@RequestHeader(SecurityConfiguration.TOKEN_HEADER) String token,
-                             @RequestParam Long projectId,
-                             @RequestParam String positionName) {
-        String uid = jwtTokenProvider.getUid(token);
-        projectService.apply(projectId, positionName, uid);
-    }
-
-    //Todo: 네이밍
-    @PUTokenApiImplicitParams
-    @PostMapping("/cancel")
-    public void cancelApply(@RequestHeader(SecurityConfiguration.TOKEN_HEADER) String token,
-                            @RequestParam Long projectId,
-                            @RequestParam String positionName) {
-        String uid = jwtTokenProvider.getUid(token);
-        projectService.cancelApply(projectId, positionName, uid);
     }
 
 }

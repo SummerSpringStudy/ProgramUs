@@ -1,28 +1,35 @@
-package com.pu.programus.bridge;
+package com.pu.programus.projectApply;
 
 import com.pu.programus.member.Member;
 import com.pu.programus.position.Position;
 import com.pu.programus.project.Project;
 import lombok.*;
-import org.springframework.lang.Nullable;
 
 import javax.persistence.*;
 
-@Getter @Setter
+
 @NoArgsConstructor
 @AllArgsConstructor
-@Entity
-public class MemberProject {
+@Setter@Getter
+@Entity@Builder
+public class ProjectApply {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    private Position position;
-
-    @ManyToOne(fetch = FetchType.LAZY)
     private Member member;
 
-    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.PERSIST)
+    private String intro;
+
+    @ManyToOne(fetch = FetchType.LAZY)
     private Project project;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    private Position position;
+
+    private ProjectApplyStatus projectApplyStatus;
+
+
 }
