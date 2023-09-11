@@ -194,12 +194,15 @@ public class ProjectService {
         log.info("Project save {}", project);
     }
 
+    /*
     public void apply(Long projectId, String positionName, String uid) {
         Project project = findProject(projectId);
         validateDuplicateApply(uid, project.getMemberProjects());
         applyUpdateHeadCount(project, positionName);
         addMemberToProject(uid, project, positionName);
     }
+    */
+
 
     public void cancelApply(Long projectId, String positionName, String uid) {
         Project project = findProject(projectId);

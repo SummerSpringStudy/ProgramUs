@@ -6,6 +6,7 @@ import com.pu.programus.location.Location;
 import com.pu.programus.project.DTO.ProjectMemberDTO;
 import com.pu.programus.member.Member;
 import com.pu.programus.project.DTO.HeadCountResponseDTO;
+import com.pu.programus.projectApply.ProjectApply;
 import lombok.*;
 
 import javax.persistence.*;
@@ -55,6 +56,12 @@ public class Project {
     @Builder.Default
     private final List<MemberProject> memberProjects = new ArrayList<>();
 
+    @OneToMany(mappedBy = "project", cascade = CascadeType.ALL)
+    @Builder.Default
+    private List<ProjectApply> ProjectApplicants = new ArrayList<>();
+
+
+
     public void addProjectHeadCount(ProjectHeadCount projectHeadCount) {
         projectHeadCounts.add(projectHeadCount);
         projectHeadCount.setProject(this);
@@ -63,6 +70,11 @@ public class Project {
     public void addMemberProject(MemberProject memberProject) {
         memberProjects.add(memberProject);
         memberProject.setProject(this);
+    }
+
+    public void addProjectApply(ProjectApply projectApply) {
+        ProjectApplicants.add(projectApply);
+        projectApply.setProject(this);
     }
 
     public void addProjectKeyword(ProjectKeyword projectKeyword) {
