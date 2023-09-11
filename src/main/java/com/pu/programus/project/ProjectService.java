@@ -194,16 +194,6 @@ public class ProjectService {
         log.info("Project save {}", project);
     }
 
-    /*
-    public void apply(Long projectId, String positionName, String uid) {
-        Project project = findProject(projectId);
-        validateDuplicateApply(uid, project.getMemberProjects());
-        applyUpdateHeadCount(project, positionName);
-        addMemberToProject(uid, project, positionName);
-    }
-    */
-
-
     public void cancelApply(Long projectId, String positionName, String uid) {
         Project project = findProject(projectId);
         checkApplyStatus(uid, project.getMemberProjects());
@@ -235,17 +225,6 @@ public class ProjectService {
     private Project findProject(Long projectId) {
         return projectRepository.findById(projectId)
                 .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 프로젝트 ID 입니다."));
-    }
-
-    private void addMemberToProject(String uid, Project project, String positionName) {
-        Member member = findMember(uid);
-        Position position = findPosition(positionName);
-        connectMemberProject(project, member, position);
-        projectRepository.save(project);
-    }
-
-    private Position findPosition(String positionName) {
-        return positionRepository.findByName(positionName).orElseThrow(() -> new IllegalArgumentException("존재하지 않는 모집 분야입니다."));
     }
 
     private void removeMemberFromProject(String uid, Project project) {

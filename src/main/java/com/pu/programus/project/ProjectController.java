@@ -23,7 +23,6 @@ public class ProjectController {
 
     private final ProjectService projectService;
     private final JwtTokenProvider jwtTokenProvider;
-    private final ProjectApplyService projectApplyService;
 
     @GetMapping("/mini")
     public ResponseEntity<ProjectMiniList> getProjectMiniList(@RequestParam(required = false) String title, @RequestParam(required = false) String location, @RequestParam(required = false) String position, Pageable pageable){
@@ -63,27 +62,6 @@ public class ProjectController {
     public void deleteProject(@RequestHeader(SecurityConfiguration.TOKEN_HEADER) String token, @RequestParam Long projectId) throws AuthorityException{
         String uid = jwtTokenProvider.getUid(token);
         projectService.delete(uid, projectId);
-    }
-
-    //Todo: 네이밍
-    @PUTokenApiImplicitParams
-    @PostMapping("/apply")
-    public void applyProject(@RequestHeader(SecurityConfiguration.TOKEN_HEADER) String token,
-                             @RequestParam Long projectId,
-                             @RequestParam String positionName,
-                             @RequestBody ProjectApplyDTO projectApplyDTO) {
-        String uid = jwtTokenProvider.getUid(token);
-        projectApplyService.apply(projectApplyDTO,uid);
-    }
-
-    //Todo: 네이밍
-    @PUTokenApiImplicitParams
-    @PostMapping("/cancel")
-    public void cancelApply(@RequestHeader(SecurityConfiguration.TOKEN_HEADER) String token,
-                            @RequestParam Long projectId,
-                            @RequestParam String positionName) {
-        String uid = jwtTokenProvider.getUid(token);
-        projectService.cancelApply(projectId, positionName, uid);
     }
 
 }
