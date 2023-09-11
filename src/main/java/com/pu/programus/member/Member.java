@@ -1,5 +1,6 @@
 package com.pu.programus.member;
 
+import com.pu.programus.comment.Comment;
 import com.pu.programus.bridge.MemberProject;
 import com.pu.programus.notification.fcm.FcmToken;
 import com.pu.programus.position.Position;
@@ -40,6 +41,9 @@ public class Member implements UserDetails {
 
     @ManyToOne(fetch = FetchType.LAZY)
     private Position position; // 카테고리로 바꾸기
+
+    @OneToMany(mappedBy = "comment", cascade = CascadeType.PERSIST)
+    private List<Comment> comments = new ArrayList<>();
 
     @OneToMany(mappedBy = "owner", cascade = CascadeType.ALL)
     private List<Project> ownerProjects = new ArrayList<>();
