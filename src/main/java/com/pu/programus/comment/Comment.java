@@ -24,4 +24,10 @@ public class Comment {
 
     @ManyToOne(fetch = FetchType.LAZY)
     private Member member;
+
+    private boolean isSecret;
+
+    public void toSecret(){
+        setComment("비밀댓글 입니다.");
+    }
 }

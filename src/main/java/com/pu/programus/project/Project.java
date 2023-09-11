@@ -56,7 +56,7 @@ public class Project {
     @Builder.Default
     private final List<MemberProject> memberProjects = new ArrayList<>();
 
-    @OneToMany(mappedBy = "comment", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "comment", cascade = CascadeType.PERSIST)
     @Builder.Default
     private List<Comment> comments = new ArrayList<>();
 

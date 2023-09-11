@@ -1,5 +1,7 @@
 package com.pu.programus.comment;
 
+import com.pu.programus.comment.DTO.CommentRequestDTO;
+import com.pu.programus.comment.DTO.CommentResponseDTO;
 import com.pu.programus.exception.AuthorityException;
 import com.pu.programus.member.Member;
 import com.pu.programus.member.MemberRepository;
@@ -10,6 +12,9 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.util.List;
+import java.util.stream.Collectors;
 
 @Slf4j
 @Service
@@ -47,6 +52,7 @@ public class CommentService {
     public static Comment buildComment(CommentRequestDTO commentRequestDTO){
         return Comment.builder()
                 .comment(commentRequestDTO.getComment())
+                .isSecret(commentRequestDTO.isSecret())
                 .build();
     }
 
@@ -66,7 +72,13 @@ public class CommentService {
 
     private void checkOwner(Comment comment, String checkUid) throws AuthorityException {
 
-        String ownerUid = comment.getMember().getUid();
+        Member member = comment.getMember();
+
+        if(member == null){
+            throw new IllegalArgumentException("존재하지 않는 멤버입니다.");
+        }
+
+        String ownerUid = member.getUid();
 
         if(!ownerUid.equals(checkUid))
             throw new AuthorityException(HttpStatus.FORBIDDEN, "권한이 없습니다.");
@@ -81,11 +93,33 @@ public class CommentService {
         commentRepository.delete(comment);
     }
 
-//    public List<Comment> getCommentsByProjectId(Long projectId){
-//
-//    }
-//
-//    public List<Comment> getCommentsByUserId(Long uid){
-//
-//    }
+    // 게시글 주인과 댓글 주인에게만 비밀댓글이 보여야 함
+    public List<CommentResponseDTO> getCommentsByProjectId(Long projectId){
+
+        Project project = projectRepository.findById(projectId)
+                .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 프로젝트입니다."));
+
+        List<Comment> comments = commentRepository.findAllByProject(project);
+
+        List<CommentResponseDTO> commentResponseDTOS = comments.stream()
+                .map(CommentResponseDTO::make)
+                .collect(Collectors.toList());
+
+        return commentResponseDTOS;
+    }
+
+    // 게시글 주인과 댓글 주인에게만 비밀댓글이 보여야 함
+    public List<CommentResponseDTO> getCommentsByUserId(Long memberId){
+
+        Member member = memberRepository.findById(memberId)
+                .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 유저입니다."));
+
+        List<Comment> comments = commentRepository.findAllByMember(member);
+
+        List<CommentResponseDTO> commentResponseDTOS = comments.stream()
+                .map(CommentResponseDTO::make)
+                .collect(Collectors.toList());
+
+        return commentResponseDTOS;
+    }
 }

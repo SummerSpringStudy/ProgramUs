@@ -41,7 +41,7 @@ public class Member implements UserDetails {
     @Builder.Default
     private Position position = new Position(); // 카테고리로 바꾸기
 
-    @OneToMany(mappedBy = "comment", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "comment", cascade = CascadeType.PERSIST)
     private List<Comment> comments = new ArrayList<>();
 
     @OneToMany(mappedBy = "owner", cascade = CascadeType.ALL)
