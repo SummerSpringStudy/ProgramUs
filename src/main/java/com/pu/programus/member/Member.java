@@ -3,6 +3,7 @@ package com.pu.programus.member;
 import com.pu.programus.bridge.MemberProject;
 import com.pu.programus.position.Position;
 import com.pu.programus.project.Project;
+import com.pu.programus.projectApply.ProjectApply;
 import lombok.*;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -45,6 +46,9 @@ public class Member implements UserDetails {
 
     @OneToMany(mappedBy = "member", cascade = CascadeType.ALL) // mappedBy로 참조하는 외래키임을 명시
     private List<MemberProject> memberProjects = new ArrayList<>();
+
+    @OneToMany(mappedBy = "project", cascade = CascadeType.ALL)
+    private List<ProjectApply> appliedProjects = new ArrayList<>();
 
     //Todo: 변경하기??
     @ElementCollection(fetch = FetchType.EAGER)

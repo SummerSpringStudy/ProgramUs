@@ -17,15 +17,7 @@ public class ProjectApplyDTO {
     private String position; //포지션
     private String intro;  //한줄소개
 
-    /*
-    public static ProjectApplyDTO make(ProjectApplyRequestDTO projectApplyRequestDTO) {
-        return ProjectApplyDTO.builder()
-                .projectId(projectApplyRequestDTO.getProjectId())
-                .position(projectApplyRequestDTO.getPosition())
-                .intro(projectApplyRequestDTO.getIntroduce())
-                .build();
-    }
-    */
+
 
 
 }
