@@ -3,6 +3,9 @@ package com.pu.programus.notification.fcm;
 import com.google.auth.oauth2.GoogleCredentials;
 import com.google.firebase.FirebaseApp;
 import com.google.firebase.FirebaseOptions;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseAuthException;
+import com.google.firebase.messaging.*;
 import com.pu.programus.notification.bridge.NoticeGroupFcmToken;
 import com.pu.programus.notification.bridge.NoticeGroupFcmTokenRepository;
 import com.pu.programus.member.Member;
@@ -20,6 +23,9 @@ import javax.transaction.Transactional;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
 
 @Slf4j
 @Service
@@ -44,23 +50,19 @@ public class FcmService {
     public void init() throws IOException {
         initFirebaseApp();
     }
+    public void sendMessageToGroup(String groupName, Map<String, String> data) throws FirebaseMessagingException {
+        List<String> getGroupTokenList = getGroupTokenList(groupName);
 
-    //Todo: 메시지 전송 로직
-    /**
-     * 특정 기기에 메시지 전송
-     * @param registrationToken 사용자가 fcm에 등록한 토큰
-     * @return 응답 토큰 ex)"name":"projects/myproject-b5ae1/messages/0:1500415314455276%31bd1c9631bd1c96"
-     */
-//    public String sendMessageByToken(String registrationToken) {
-//        Message message = Message.builder()
-//                .set
-//                .setToken(registrationToken)
-//                .build();
-//    }
+        MulticastMessage message = makeMulticastMessage(data, getGroupTokenList);
 
-    public void enableFcmToken(String uid, String token) {
+        BatchResponse response = FirebaseMessaging.getInstance().sendMulticast(message);
+        checkFailedTokens(getGroupTokenList, response);
+    }
+
+    public void enableFcmToken(String uid, String token) throws FirebaseAuthException {
         Member member = getMember(uid);
 
+        FirebaseAuth.getInstance().verifyIdToken(token);
         FcmToken fcmToken = new FcmToken(token, member);
         member.setFcmToken(fcmToken);
         fcmTokenRepository.save(fcmToken);
@@ -162,5 +164,37 @@ public class FcmService {
             throw new IOException("Credential cannot be created from stream");
         }
         log.info("initFirebaseApp Complete");
+    }
+
+    private MulticastMessage makeMulticastMessage(Map<String, String> data, List<String> getGroupTokenList) {
+        return MulticastMessage.builder()
+                .putAllData(data)
+                .addAllTokens(getGroupTokenList)
+                .build();
+    }
+
+    private List<String> getGroupTokenList(String groupName) {
+        List<String> groupList = new ArrayList<>();
+        NoticeGroup noticeGroup = getNoticeGroup(groupName);
+        for (NoticeGroupFcmToken noticeGroupFcmToken : noticeGroup.getNoticeGroupFcmTokenList()) {
+            String token = noticeGroupFcmToken.getFcmToken().getValue();
+            groupList.add(token);
+        }
+        return groupList;
+    }
+
+    private void checkFailedTokens(List<String> groupList, BatchResponse response) {
+        if (response.getFailureCount() > 0) {
+            List<SendResponse> responses = response.getResponses();
+            List<String> failedTokens = new ArrayList<>();
+            for (int i = 0; i < responses.size(); i++) {
+                if (!responses.get(i).isSuccessful()) {
+                    // The order of responses corresponds to the order of the registration tokens.
+                    failedTokens.add(groupList.get(i));
+                }
+            }
+
+            log.warn("List of tokens that caused failures: " + failedTokens);
+        }
     }
 }
