@@ -1,6 +1,7 @@
 package com.pu.programus.member;
 
 import com.pu.programus.bridge.MemberProject;
+import com.pu.programus.notification.fcm.FcmToken;
 import com.pu.programus.position.Position;
 import com.pu.programus.project.Project;
 import com.pu.programus.projectApply.ProjectApply;
@@ -55,7 +56,9 @@ public class Member implements UserDetails {
     @Builder.Default
     private List<String> roles = new ArrayList<>();
 
-
+    @Nullable
+    @OneToOne(mappedBy = "member", cascade = CascadeType.ALL, orphanRemoval = true) // 갈아끼울수 있는 객체이므로 orphanremoval 적용
+    private FcmToken fcmToken;
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {

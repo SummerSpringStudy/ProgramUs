@@ -42,7 +42,7 @@ public class MemberService {
     private static MemberDTO getMemberDTO(Member member, ProjectList projectList, PositionDTO positionDTO) {
         MemberDTO memberDTO = MemberDTO.builder()
                 .uid(member.getUid())
-                .userName(member.getUsername())
+                .userName(member.getNickname())
                 .intro(member.getIntro())
                 .email(member.getEmail())
                 .department(member.getDepartment())
@@ -90,7 +90,7 @@ public class MemberService {
     public void modifyMember(EditMemberDto editMemberDto, Member member) {
         //Todo: 비밀번호도 일괄 수정??
         member.setPassword(editMemberDto.getPassword());
-        member.setUserName(editMemberDto.getUserName());
+        member.setNickname(editMemberDto.getUserName());
         member.setDepartment(editMemberDto.getDepartment());
         member.setEmail(editMemberDto.getEmail());
         member.setIntro(editMemberDto.getIntro());
